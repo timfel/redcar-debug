@@ -9,15 +9,17 @@ class Redcar::GDI::Speedbar < Redcar::Speedbar
   attr_accessor :model
 
   def initialize(model)
-    p "init with #{model}"
+    super()
     self.model = model
+    label_cmd.text = model.commandline
   end
 
   def after_draw
-    self.connection.value = self.class.previous_connection
-    self.arguments.value  = self.class.previous_arguments
+    connection.value = self.class.previous_connection || ""
+    arguments.value  = self.class.previous_arguments || ""
   end
 
+  label :label, "Running:"
   label :label_cmd, "model.command"
 
   label :label_connection, "Attach to:"
@@ -26,13 +28,20 @@ class Redcar::GDI::Speedbar < Redcar::Speedbar
   label :label_replace, "Additional arguments:"
   textbox :arguments
 
-  button :run, "Debug!", "Return" do
-    self.class.previous_connection  = connection.value
-    self.class.previous_arguments   = arguments.value
-    run
+  button :button_debug, "Debug!", "Return" do
+    unless connection.value.empty?
+      self.class.previous_connection = connection.value
+      self.class.previous_arguments  = arguments.value
+      debug(connection.value, arguments.value)
+    else
+      connection.value = "--- Need a value"
+    end
   end
 
-  def self.run
-    ProcessController.new(model)
+  def debug(connection, arguments)
+    Redcar::GDI::ProcessController.new(:model => model,
+      :arguments => arguments,
+      :connection => connection).run
+    controller.close
   end
 end

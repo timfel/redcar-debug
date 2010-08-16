@@ -14,9 +14,15 @@ class Redcar::GDI::Debugger
     end
   end
 
-  def commandline
-    raise NotImplementedError.new("You must implement command.")
+  def self.abstract(symbol)
+    self.class_eval(<<-RUBY)
+      def #{symbol}
+        raise NotImplementedError.new('You must implement #{symbol}.')
+      end
+    RUBY
   end
+
+  abstract :"self.commandline"
 
 end
 

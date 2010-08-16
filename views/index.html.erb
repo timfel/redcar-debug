@@ -1,0 +1,56 @@
+<script type="text/javascript" src="file://<%= Redcar::HtmlView.jquery_path %>"></script>
+<script language="javascript">
+  (function() {
+    $(document).ready(function() {
+      var input, output;
+      input = $("#input");
+      output = $("#output");
+      input.focus();
+
+      $("form").submit(function(e) {
+        e.preventDefault();
+        var value;
+        value = input.val();
+        output.append("<span class=\"stdout\">" + value + "<br></span>");
+        // Just push the data, output comes from debugger
+        try {
+          // Call the Controller. FIXME: Why is the Controller const not available here?
+          rubyCall("input", value);
+        } catch(e) {
+          alert(e.message);
+        }
+        input.val("");
+        input.focus();
+      });
+    });
+  })();
+</script>
+
+<link rel="stylesheet" href="file://<%= Redcar::HtmlView.default_css_path %>" type="text/css" media="screen">
+<style>
+  .stdout {
+    font-size: 12;
+  }
+  .stderr {
+    color: red;
+    font-size: 12;
+  }
+  #input {
+    width: 90%;
+    border: none;
+    border-left: 1px solid #555;
+    display: inline;
+  }
+  #input:focus {
+    border: none;
+    outline: none;
+  }
+  form {
+    display: inline;
+    font-size: 12;
+  }
+</style>
+
+<h3>General Debugger Interface</h3>
+<span id="output"></span>
+<form><input id="input" type="text"/></form>

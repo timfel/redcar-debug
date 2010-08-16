@@ -10,7 +10,7 @@ module Redcar
           sub_menu "Debug" do
             sub_menu "GDI" do
               Redcar::GDI.debuggers.each do |p|
-                item p.name { Redcar::GDI.execute(p) }
+                item(p.name) { Redcar::GDI.execute(p) }
               end
             end
           end
@@ -21,8 +21,8 @@ module Redcar
       end
 
       def execute(model)
-	@speedbar = Redcar::GDI::Speedbar.new(model)
-        win.open_speedbar(@speedbar)
+        @speedbar = Redcar::GDI::Speedbar.new(model)
+        Redcar.app.focussed_window.open_speedbar(@speedbar)
       end
     end
   end
