@@ -21,7 +21,7 @@ class Redcar::GDI::ProcessController
     @stdin.close
     @stdout.close
     @stderr.close
-    @stdin = @stderr = @stdout = @output = nil
+    @stdin = @stderr = @stdout = nil
   end
 
   def running?
@@ -29,17 +29,12 @@ class Redcar::GDI::ProcessController
   end
 
   def run
-    output.start
-    case Redcar.platform
-    when :osx, :linux
-      run_posix
-    when :windows
-      run_windows
-    end
-  end
+    notify_listeners(:run)
+    [:osx, :linux].include? Redcar.platform ? run_posix : run_windows
 
-  def output
-    @output ||= Redcar::GDI::OutputController.new(self)
+    add_listener(:stdout_ready) do |stdout|
+      notify_listeners(stdout.end_with?("\n") ? :process_resumed : :process_halted)
+    end
   end
 
   def input(text)
@@ -53,32 +48,29 @@ class Redcar::GDI::ProcessController
 
   def run_posix
     @stdin, @stdout, @stderr = Open3::popen3("#{@model.commandline} #{@connection} #{@arguments}")
-    @threads = []
-    @threads << Thread.new do
-      sleep 1
-      loop do
-        # Read at most 10000 bytes. Blocks if nothing available
-        out = @stderr.readpartial(10000)
-        notify_listeners(:stderr_ready, out)
+    {:stdout_ready => @stdout, :stderr_ready => @stderr}.each_pair do |k, io|
+      @threads << Thread.new(io, k) do |io, notification|
+        sleep 1
+        begin
+          loop do
+            # The process is closed if EOF is reached
+            close if io.eof?
+            # Read at most 10000 bytes. Blocks only if _nothing_ is available
+            buf = io.readpartial(10000)
+            notify_listeners(notification, buf)
+          end
+        rescue Exception => e
+          p e.class
+          p e.message
+          p e.backtrace
+        end
       end
-    end
-    @threads << Thread.new do
-      sleep 1
-      loop do
-        out = @stdout.readpartial(10000)
-        notify_listeners(:stdout_ready, out)
-        notify_listeners(out.end_with?("\n") ? :process_resumed : :process_halted)
-      end
-    end
-    @threads << Thread.new do
-      sleep 1
-      close if (@stdout.eof? || @stderr.eof?)
     end
   end
 
   # No windows support, sorry
   def run_windows
-    output.stdout("Sorry, windows is not supported at this time")
+    notify_listeners(:stdout, "Sorry, windows is not supported at this time")
   end
 
   # Step to next line in current file

@@ -1,5 +1,6 @@
 require 'erb'
 require 'gdi/output_controller/repl_controller'
+require 'gdi/output_controller/trace_controller'
 
 class Redcar::GDI::OutputController
   include Redcar::HtmlController
@@ -8,7 +9,9 @@ class Redcar::GDI::OutputController
     @process_controller = process_controller
 
     ReplController.new(self, process_controller)
+    TraceController.new(self, process_controller)
 
+    process_controller.add_listener(:run) { start }
     process_controller.add_listener(:process_halted) { status("Halted") }
     process_controller.add_listener(:process_resumed) { status("Running") }
     process_controller.add_listener(:process_finished) { status("Finished") }
@@ -18,10 +21,16 @@ class Redcar::GDI::OutputController
     "This tab contains a running debugger. \n\nKill the debugger and close?"
   end
 
-  def append(text, id = "output")
+  def append(text, id)
     execute(<<-JAVASCRIPT)
-      $("##{id}").append(#{text.inspect});
-      $("html, body").attr({ scrollTop: $("##{id}").attr("scrollHeight") });
+    $("##{id}").append(#{text.inspect});
+    $("html, body").attr({ scrollTop: $("##{id}").attr("scrollHeight") });
+    JAVASCRIPT
+  end
+
+  def replace(text, id)
+    execute(<<-JAVASCRIPT)
+    $("##{id}").html(#{text.inspect});
     JAVASCRIPT
   end
 
@@ -44,13 +53,10 @@ class Redcar::GDI::OutputController
   end
 
   def status(text)
-  html = <<-HTML
-      <small><strong>#{text}</strong></small>
-      <hr />
+    replace(<<-HTML, "status")
+    <small><strong>#{text}</strong></small>
+    <hr />
     HTML
-    execute(<<-JAVASCRIPT)
-      $("#status").replaceWith(#{html.inspect});
-    JAVASCRIPT
   end
 
   def show_tab
