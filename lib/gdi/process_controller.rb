@@ -12,6 +12,26 @@ class Redcar::GDI::ProcessController
     @connection  = options[:connection]
     @arguments   = options[:arguments]
     @breakpoints = Breakpoints.new(self)
+
+    @threads = []
+
+    @awaited_events = {}
+
+    Redcar::GDI::OutputController.new(self)
+  end
+
+  def wait_for(*events, &callback)
+    events.each {|e| @awaited_events[e] = callback }
+  end
+
+  def notify_listeners(symbol, *args)
+    if @awaited_events[symbol]
+      p "Waited for this event: #{symbol} (#{args}) and now I got it!"
+      @awaited_events[symbol].call(args)
+      @awaited_events.clear
+    else
+      super
+    end
   end
 
   def close
@@ -89,8 +109,12 @@ class Redcar::GDI::ProcessController
   def halt
   end
 
-  def halted
-    @shell
+  def backtrace(&callback)
+    wait_for(:stdout_ready, :stderr_ready, &callback)
+    input(model.backtrace)
+  end
+
+  def locals(scope=nil)
   end
 
   def add_breakpoint(element)
