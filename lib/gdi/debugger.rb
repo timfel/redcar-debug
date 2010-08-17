@@ -14,15 +14,18 @@ class Redcar::GDI::Debugger
     end
   end
 
-  def self.abstract(symbol)
-    self.class_eval(<<-RUBY)
-      def #{symbol}
-        raise NotImplementedError.new('You must implement #{symbol}.')
-      end
-    RUBY
+  def self.abstract(*symbols)
+    symbols.each do |symbol|
+      self.class_eval(<<-RUBY)
+        def self.#{symbol}
+          raise NotImplementedError.new('You must implement #{symbol}.')
+        end
+      RUBY
+    end
   end
 
-  abstract :"self.commandline"
+  abstract :commandline, :backtrace, :step_into, :step_over, :step_return, :halt,
+    :locals, :breakpoints
 
 end
 
