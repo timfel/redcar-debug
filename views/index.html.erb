@@ -49,8 +49,21 @@
     display: inline;
     font-size: 12;
   }
+  .window {
+    border: 1px solid #ccc;
+    padding: 1px;
+  }
 </style>
 
 <h3>General Debugger Interface</h3>
-<span id="output"></span>
-<form><input id="input" type="text"/></form>
+<span id="status"></span>
+<div class="window">
+  <span id="repl"></span>
+  <form><input id="input" type="text"/></form>
+</div>
+<div class="window">
+  <span id="backtrace"></span>
+</div>
+<div class="window">
+  <span id="variables"></span>
+</div>

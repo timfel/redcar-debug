@@ -1,57 +1,21 @@
 require 'erb'
+require 'gdi/output_controller/repl_controller'
 
 class Redcar::GDI::OutputController
   include Redcar::HtmlController
 
-  attr_accessor :tab
-  
   def initialize(process_controller)
     @process_controller = process_controller
+
+    ReplController.new(self, process_controller)
+
+    process_controller.add_listener(:process_halted) { status("Halted") }
+    process_controller.add_listener(:process_resumed) { status("Running") }
+    process_controller.add_listener(:process_finished) { status("Finished") }
   end
-  
+
   def ask_before_closing
     "This tab contains a running debugger. \n\nKill the debugger and close?"
-  end
-  
-  def close
-    @process_controller.close
-    tab = nil
-  end
-  
-  def start
-    show_tab
-  end
-  
-  def finish
-    append(<<-HTML)    
-      <hr />
-      <small><strong>Session finished</strong></small>
-    HTML
-  end
-    
-  def show_tab
-    unless tab
-      tab = Redcar.app.focussed_window.new_tab(Redcar::HtmlTab)
-      tab.html_view.controller = self
-    end
-    tab.focus
-  end
-  
-  # TODO: Hook up colours
-  def process(text)    
-    text.gsub("\n", "<br>")
-  end
-
-  def stdout(out)
-    append(<<-HTML)
-      <span class="stdout">#{process(out)}</span>
-    HTML
-  end
-
-  def stderr(err)
-    append(<<-HTML)
-      <span class="stderr">#{process(err)}</span>
-    HTML
   end
 
   def append(text, id = "output")
@@ -61,24 +25,43 @@ class Redcar::GDI::OutputController
     JAVASCRIPT
   end
 
+  def close
+    @process_controller.close
+    @tab = nil
+  end
+
   def index
-    rhtml = ERB.new(File.read(File.expand_path("../../../views/index.html.erb", __FILE__)))        
+    rhtml = ERB.new(File.read(File.expand_path("../../../views/index.html.erb", __FILE__)))
     rhtml.result(binding)
   end
 
   def input(text)
-    @process_controller.input(text)    
+    @process_controller.input(text)
+  end
+
+  def start
+    show_tab
+  end
+
+  def status(text)
+  html = <<-HTML
+      <small><strong>#{text}</strong></small>
+      <hr />
+    HTML
+    execute(<<-JAVASCRIPT)
+      $("#status").replaceWith(#{html.inspect});
+    JAVASCRIPT
+  end
+
+  def show_tab
+    unless @tab
+      @tab = Redcar.app.focussed_window.new_tab(Redcar::HtmlTab)
+      @tab.html_view.controller = self
+    end
+    @tab.focus
   end
 
   def title
     "GDI Session"
-  end
-
-  def show_prompt
-    execute('$("#input").show();$("#input").focus();')
-  end
-
-  def hide_prompt
-    execute('$("#input").hide();')
   end
 end

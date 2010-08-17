@@ -2,6 +2,8 @@ require 'open3'
 require 'gdi/output_controller'
 
 class Redcar::GDI::ProcessController
+  include Redcar::Observable
+
   attr_accessor :model
   attr_accessor :breakpoints
 
@@ -13,11 +15,13 @@ class Redcar::GDI::ProcessController
   end
 
   def close
-    output.finish
+    notify_listeners(:process_finished)
     @threads.each {|th| th.kill }
+    @threads.clear
     @stdin.close
     @stdout.close
     @stderr.close
+    @stdin = @stderr = @stdout = @output = nil
   end
 
   def running?
@@ -55,20 +59,15 @@ class Redcar::GDI::ProcessController
       loop do
         # Read at most 10000 bytes. Blocks if nothing available
         out = @stderr.readpartial(10000)
-        output.stderr(out)
+        notify_listeners(:stderr_ready, out)
       end
     end
     @threads << Thread.new do
       sleep 1
       loop do
         out = @stdout.readpartial(10000)
-        output.stdout(out)
-        if out.end_with? "\n"
-          # No prompt, so we are hanging
-          output.hide_prompt
-        else
-          output.show_prompt
-        end
+        notify_listeners(:stdout_ready, out)
+        notify_listeners(out.end_with?("\n") ? :process_resumed : :process_halted)
       end
     end
     @threads << Thread.new do
