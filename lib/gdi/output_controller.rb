@@ -62,8 +62,13 @@ class Redcar::GDI::OutputController
 
   def show_tab
     unless @tab
-      @tab = Redcar.app.focussed_window.new_tab(Redcar::HtmlTab)
-      @tab.html_view.controller = self
+      Redcar.app.focussed_window.tap do |w|
+        # Ensure two notebooks, focus the currently unfocused one
+        w.create_notebook
+        w.set_focussed_notebook(w.nonfocussed_notebook)
+        @tab = w.new_tab(Redcar::HtmlTab)
+        @tab.html_view.controller = self
+      end
     end
     @tab.focus
   end
