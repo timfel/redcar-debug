@@ -15,7 +15,7 @@
         // Just push the data, output comes from debugger
         try {
           // Call the Controller. FIXME: Why is the Controller const not available here?
-          rubyCall("input", value);
+          rubyCall("input", ["stdin_ready", value]);
         } catch(e) {
           alert(e.message);
         }

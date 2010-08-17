@@ -4,6 +4,8 @@ class Redcar::GDI::OutputController
       @output_controller = output_controller
       @process_controller = process_controller
 
+      output_controller.add_listener(:stdin_ready) {|cmd| @process_controller.input(cmd) }
+
       process_controller.add_listener(:process_halted) { show_prompt }
       process_controller.add_listener(:process_resumed) { hide_prompt }
       process_controller.add_listener(:process_finished) { hide_prompt }

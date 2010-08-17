@@ -4,6 +4,7 @@ require 'gdi/output_controller/trace_controller'
 
 class Redcar::GDI::OutputController
   include Redcar::HtmlController
+  include Redcar::Observable
 
   def initialize(process_controller)
     @process_controller = process_controller
@@ -44,8 +45,8 @@ class Redcar::GDI::OutputController
     rhtml.result(binding)
   end
 
-  def input(text)
-    @process_controller.input(text)
+  def input(event, text)
+    notify_listeners(event.to_sym, text)
   end
 
   def start
