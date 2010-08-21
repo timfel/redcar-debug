@@ -39,10 +39,6 @@ class Redcar::GDI::ProcessController
   def run
     notify_listeners(:run)
     [:osx, :linux].include? Redcar.platform ? run_posix : run_windows
-
-    add_listener :before => :stdout_ready do |stdout|
-      notify_listeners(prompt_ready?(stdout) ? :process_halted : :process_resumed)
-    end
   end
 
   def prompt_ready?(stdout)
@@ -69,6 +65,9 @@ class Redcar::GDI::ProcessController
           # Read at most 10000 bytes. Blocks only if _nothing_ is available
           buf = @stdout.readpartial(BUFFER_SIZE)
           notify_listeners(:stdout_ready, buf)
+          if buf.size < BUFFER_SIZE
+            notify_listeners(prompt_ready?(buf) ? :process_halted : :process_resumed)
+          end
         end
       rescue Exception => e
         p e.class
