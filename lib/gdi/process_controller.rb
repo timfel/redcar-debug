@@ -102,14 +102,18 @@ class Redcar::GDI::ProcessController
 
   def backtrace
     input(model.backtrace)
+    wait_for {|output| prompt_ready? output }
+  end
+
+  def wait_for
     buffer = @stdout.gets
 
-    catch (:output_empty) do
+    catch (:output_ready) do
       loop do
         # Wait for output
         timeout(1) { buffer += @stdout.readpartial(10000) }
-        if prompt_ready?(buffer)
-          throw :output_empty
+        if yield(buffer)
+          throw :output_ready
         else
           # Command output has not finished, but nothing is available
           # Let JRuby pump the stdout of the process
