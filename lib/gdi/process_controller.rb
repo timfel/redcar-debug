@@ -107,6 +107,19 @@ class Redcar::GDI::ProcessController
     wait_for {|output| prompt_ready? output }
   end
 
+  def locals
+    input(model.locals)
+    wait_for {|output| prompt_ready? output }
+  end
+
+  def add_breakpoint(element)
+    model.add_breakpoint(element)
+  end
+
+  def remove_breakpoint(element)
+    model.remove_breakpoint(element)
+  end
+
   def wait_for
     buffer = @stdout.gets
 
@@ -130,19 +143,6 @@ class Redcar::GDI::ProcessController
     end
 
     buffer
-  end
-
-  def locals
-    input(model.locals)
-    wait_for {|output| prompt_ready? output }
-  end
-
-  def add_breakpoint(element)
-    model.add_breakpoint(element)
-  end
-
-  def remove_breakpoint(element)
-    model.remove_breakpoint(element)
   end
 
   class Breakpoints < Array
