@@ -8,7 +8,7 @@ class Redcar::GDI::OutputController
     end
 
     def query_locals
-      output = @process_controller.locals.gsub("\n", "<br>")      
+      output = @process_controller.locals.gsub("\n", "<br>")
       @output_controller.replace(output, "locals")
     end
   end
