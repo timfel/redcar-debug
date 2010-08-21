@@ -2,6 +2,9 @@ require 'open3'
 require 'gdi/output_controller'
 
 class Redcar::GDI::ProcessController
+  BUFFER_SIZE = 10000
+  COMMAND_TIMEOUT = 10
+
   include Redcar::Observable
 
   attr_accessor :model
@@ -64,7 +67,7 @@ class Redcar::GDI::ProcessController
           # The process is closed if EOF is reached
           close if @stdout.eof?
           # Read at most 10000 bytes. Blocks only if _nothing_ is available
-          buf = @stdout.readpartial(10000)
+          buf = @stdout.readpartial(BUFFER_SIZE)
           notify_listeners(:stdout_ready, buf)
         end
       rescue Exception => e
@@ -111,12 +114,17 @@ class Redcar::GDI::ProcessController
     catch (:output_ready) do
       loop do
         # Wait for output
-        timeout(1) { buffer += @stdout.readpartial(10000) }
+        begin
+          timeout(COMMAND_TIMEOUT) do
+            buffer += @stdout.readpartial(BUFFER_SIZE)
+          end
+        rescue Timeout::Error
+        end
         if yield(buffer)
           throw :output_ready
         else
-          # Command output has not finished, but nothing is available
-          # Let JRuby pump the stdout of the process
+          # Command output has not finished
+          # Let JRuby pump the stdout of the process and wait for more
           Thread.pass
         end
       end
