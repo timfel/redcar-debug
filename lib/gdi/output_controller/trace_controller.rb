@@ -7,8 +7,7 @@ class Redcar::GDI::OutputController
     end
     
     def query_trace      
-      output = @process_controller.backtrace
-      p "Got #{output} as query return"
+      output = @process_controller.backtrace.gsub("\n", "<br>")
       @output_controller.replace(output, "trace")
     end
   end
