@@ -10,7 +10,7 @@ class Redcar::GDI::OutputController
     @process_controller = process_controller
 
     ReplController.new(self, process_controller)
-    TraceController.new(self, process_controller)
+    #TraceController.new(self, process_controller)
 
     process_controller.add_listener(:run) { start }
     process_controller.add_listener(:process_halted) { status("Halted") }

@@ -13,46 +13,31 @@ class Redcar::GDI::ProcessController
     @arguments   = options[:arguments]
     @breakpoints = Breakpoints.new(self)
 
-    @threads = []
-
-    @awaited_events = {}
-
     Redcar::GDI::OutputController.new(self)
-  end
-
-  def wait_for(*events, &callback)
-    events.each {|e| @awaited_events[e] = callback }
-  end
-
-  def notify_listeners(symbol, *args)
-    if @awaited_events[symbol]
-      p "Waited for this event: #{symbol} (#{args}) and now I got it!"
-      @awaited_events[symbol].call(args)
-      @awaited_events.clear
-    else
-      super
-    end
   end
 
   def close
     notify_listeners(:process_finished)
-    @threads.each {|th| th.kill }
-    @threads.clear
+    @output_thread.kill
     @stdin.close
     @stdout.close
-    @stderr.close
-    @stdin = @stderr = @stdout = nil
+    @stdin = @stdout = nil
   end
 
   def running?
-    !!@stdin
+    @stdout && !@stdout.eof?
+  end
+  
+  def notify_listeners(*args)
+    p "Notify #{args}"
+    super
   end
 
   def run
     notify_listeners(:run)
     [:osx, :linux].include? Redcar.platform ? run_posix : run_windows
 
-    add_listener(:stdout_ready) do |stdout|
+    add_listener :before => :stdout_ready do |stdout|
       notify_listeners(stdout.end_with?("\n") ? :process_resumed : :process_halted)
     end
   end
@@ -67,23 +52,21 @@ class Redcar::GDI::ProcessController
   end
 
   def run_posix
-    @stdin, @stdout, @stderr = Open3::popen3("#{@model.commandline} #{@connection} #{@arguments}")
-    {:stdout_ready => @stdout, :stderr_ready => @stderr}.each_pair do |k, io|
-      @threads << Thread.new(io, k) do |io, notification|
-        sleep 1
-        begin
-          loop do
-            # The process is closed if EOF is reached
-            close if io.eof?
-            # Read at most 10000 bytes. Blocks only if _nothing_ is available
-            buf = io.readpartial(10000)
-            notify_listeners(notification, buf)
-          end
-        rescue Exception => e
-          p e.class
-          p e.message
-          p e.backtrace
+    @stdin, @stdout = Open3::popen3("#{@model.commandline} #{@connection} #{@arguments} 2>&1")
+    @output_thread = Thread.new do
+      sleep 1
+      begin
+        loop do
+          # The process is closed if EOF is reached
+          close if @stdout.eof?
+          # Read at most 10000 bytes. Blocks only if _nothing_ is available
+          buf = @stdout.readpartial(10000)
+          notify_listeners(:stdout_ready, buf)
         end
+      rescue Exception => e
+        p e.class
+        p e.message
+        p e.backtrace
       end
     end
   end
@@ -95,30 +78,38 @@ class Redcar::GDI::ProcessController
 
   # Step to next line in current file
   def step_over
+    input(model.step_over)
   end
 
   # Step into the next function
   def step_into
+    input(model.step_into)
   end
 
   # Return from of the current function
   def step_return
+    input(model.step_return)
   end
 
   # Stop NOW
   def halt
+    input(model.halt)
   end
 
-  def backtrace(&callback)
-    wait_for(:stdout_ready, :stderr_ready, &callback)
+  def backtrace
     input(model.backtrace)
   end
 
-  def locals(scope=nil)
+  def locals
+    input(model.locals)
   end
 
   def add_breakpoint(element)
-    @debugger_model.add_breakpoint(element)
+    model.add_breakpoint(element)
+  end
+
+  def remove_breakpoint(element)
+    model.remove_breakpoint(element)
   end
 
   class Breakpoints < Array
