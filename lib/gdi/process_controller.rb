@@ -38,8 +38,12 @@ class Redcar::GDI::ProcessController
     [:osx, :linux].include? Redcar.platform ? run_posix : run_windows
 
     add_listener :before => :stdout_ready do |stdout|
-      notify_listeners(stdout.end_with?("\n") ? :process_resumed : :process_halted)
+      notify_listeners(prompt_ready?(stdout) ? :process_halted : :process_resumed)
     end
+  end
+
+  def prompt_ready?(stdout)
+    !stdout.end_with?("\n")
   end
 
   def input(text)
@@ -98,6 +102,23 @@ class Redcar::GDI::ProcessController
 
   def backtrace
     input(model.backtrace)
+    buffer = @stdout.gets
+
+    catch (:output_empty) do
+      loop do
+        # Wait for output
+        timeout(1) { buffer += @stdout.readpartial(10000) }
+        if prompt_ready?(buffer)
+          throw :output_empty
+        else
+          # Command output has not finished, but nothing is available
+          # Let JRuby pump the stdout of the process
+          Thread.pass
+        end
+      end
+    end
+
+    buffer
   end
 
   def locals

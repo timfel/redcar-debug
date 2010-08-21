@@ -4,7 +4,7 @@ class Redcar::GDI::OutputController
       @output_controller = output_controller
       @process_controller = process_controller
 
-      output_controller.add_listener(:stdin_ready) {|cmd| @process_controller.input(cmd) }
+      output_controller.add_listener(:stdin_ready) {|cmd| input(cmd) }
 
       process_controller.add_listener(:process_halted) { show_prompt }
       process_controller.add_listener(:process_resumed) { hide_prompt }
@@ -39,5 +39,11 @@ class Redcar::GDI::OutputController
       <span class="#{cssclass}">#{process(out)}</span>
       HTML
     end
+
+    def input(cmd)
+      print(process("#{cmd}\n"), "stdout")
+      @process_controller.input(cmd)
+    end
+
   end
 end
