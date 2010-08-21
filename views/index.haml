@@ -1,0 +1,15 @@
+%script{:src => "file://#{Redcar::HtmlView.jquery_path}", :type => "text/javascript"}
+%script{:src => "file://#{@view_root}/index.js", :type => "text/javascript"}
+%link{:href => "file://#{Redcar::HtmlView.default_css_path}", :media => "screen", :rel => "stylesheet", :type => "text/css"}
+%link{:href => "file://#{@view_root}/index.css", :media => "screen", :rel => "stylesheet", :type => "text/css"}
+
+%span#status
+#repl-window.window
+  %span#repl
+  %form
+    %input#input{:type => "text"}
+.window
+  %span#trace
+.window
+  %span#locals
+

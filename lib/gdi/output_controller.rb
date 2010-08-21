@@ -1,4 +1,5 @@
-require 'erb'
+require File.expand_path("../../../vendor/haml/lib/haml", __FILE__)
+
 require 'gdi/output_controller/repl_controller'
 require 'gdi/output_controller/trace_controller'
 require 'gdi/output_controller/locals_controller'
@@ -9,6 +10,8 @@ class Redcar::GDI::OutputController
 
   def initialize(process_controller)
     @process_controller = process_controller
+    @view_root = File.expand_path("../../../views/", __FILE__)
+    p @view_root
 
     ReplController.new(self, process_controller)
     TraceController.new(self, process_controller)
@@ -42,8 +45,8 @@ class Redcar::GDI::OutputController
   end
 
   def index
-    rhtml = ERB.new(File.read(File.expand_path("../../../views/index.html.erb", __FILE__)))
-    rhtml.result(binding)
+    rhtml = Haml::Engine.new(File.read(File.expand_path("../../../views/index.haml", __FILE__)))
+    rhtml.render(binding)
   end
 
   def input(event, text)

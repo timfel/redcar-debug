@@ -1,4 +1,3 @@
-
 Plugin.define do
   name "gdi"
   version "0.0.1"
