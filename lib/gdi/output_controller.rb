@@ -27,7 +27,6 @@ class Redcar::GDI::OutputController
   def append(text, id)
     execute(<<-JAVASCRIPT)
     $("##{id}").append(#{text.inspect});
-    $("html, body").attr({ scrollTop: $("##{id}").attr("scrollHeight") });
     JAVASCRIPT
   end
 

@@ -38,6 +38,9 @@ class Redcar::GDI::OutputController
       append(<<-HTML)
       <span class="#{cssclass}">#{process(out)}</span>
       HTML
+      execute(<<-JAVASCRIPT)
+      $("#repl-window").attr({ scrollTop: $("#repl-window").attr("scrollHeight") });
+      JAVASCRIPT
     end
 
     def input(cmd)
