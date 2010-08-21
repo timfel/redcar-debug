@@ -28,15 +28,14 @@
 
 <link rel="stylesheet" href="file://<%= Redcar::HtmlView.default_css_path %>" type="text/css" media="screen">
 <style>
-  .stdout {
+  body {
     font-size: 12;
   }
   .stderr {
     color: red;
-    font-size: 12;
   }
   #input {
-    width: 90%;
+    width: 80%;
     border: none;
     border-left: 1px solid #555;
     display: inline;
@@ -52,6 +51,8 @@
   .window {
     border: 1px solid #ccc;
     padding: 1px;
+    overflow-y: scroll;
+    height: 30%;
   }
 </style>
 
@@ -65,5 +66,5 @@
   <span id="trace"></span>
 </div>
 <div class="window">
-  <span id="variables"></span>
+  <span id="locals"></span>
 </div>
