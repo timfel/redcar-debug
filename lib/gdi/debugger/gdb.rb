@@ -9,5 +9,9 @@ class Redcar::GDI::Debugger::GDB < Redcar::GDI::Debugger
     def backtrace
       "bt"
     end
+
+    def locals
+      "info locals"
+    end
   end
 end

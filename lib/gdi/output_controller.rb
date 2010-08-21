@@ -1,6 +1,7 @@
 require 'erb'
 require 'gdi/output_controller/repl_controller'
 require 'gdi/output_controller/trace_controller'
+require 'gdi/output_controller/locals_controller'
 
 class Redcar::GDI::OutputController
   include Redcar::HtmlController
@@ -11,6 +12,7 @@ class Redcar::GDI::OutputController
 
     ReplController.new(self, process_controller)
     TraceController.new(self, process_controller)
+    LocalsController.new(self, process_controller)
 
     process_controller.add_listener(:run) { start }
     process_controller.add_listener(:process_halted) { status("Halted") }

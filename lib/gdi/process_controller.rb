@@ -127,6 +127,7 @@ class Redcar::GDI::ProcessController
 
   def locals
     input(model.locals)
+    wait_for {|output| prompt_ready? output }
   end
 
   def add_breakpoint(element)
