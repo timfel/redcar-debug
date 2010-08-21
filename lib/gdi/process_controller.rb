@@ -30,11 +30,6 @@ class Redcar::GDI::ProcessController
   def running?
     @stdout && !@stdout.eof?
   end
-  
-  def notify_listeners(*args)
-    p "Notify #{args}"
-    super
-  end
 
   def run
     notify_listeners(:run)
