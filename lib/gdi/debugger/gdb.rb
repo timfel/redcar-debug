@@ -12,7 +12,7 @@ class Redcar::GDI::Debugger::GDB < Redcar::GDI::Debugger
 
   def automatic_queries
     @process.add_listener(:process_halted) do
-      [:Backtrace, :Locals, :Breakpoints].each do |query|
+      [:Backtrace, :Locals, :Breakpoints, :Registers].each do |query|
         @process.input(self.class.const_get(query))
         output = wait_for {|stdout| prompt_ready? stdout }
         @output.replace(output, query.to_s.downcase)
