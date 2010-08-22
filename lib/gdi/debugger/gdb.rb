@@ -13,5 +13,9 @@ class Redcar::GDI::Debugger::GDB < Redcar::GDI::Debugger
     def locals
       "info locals"
     end
+
+    def breakpoints
+      "info breakpoints"
+    end
   end
 end

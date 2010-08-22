@@ -107,6 +107,11 @@ class Redcar::GDI::ProcessController
     wait_for {|output| prompt_ready? output }
   end
 
+  def breakpoints
+    input(model.breakpoints)
+    wait_for {|output| prompt_ready? output }
+  end
+
   def add_breakpoint(element)
     model.add_breakpoint(element)
   end

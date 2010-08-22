@@ -1,8 +1,6 @@
 require File.expand_path("../../../vendor/haml/lib/haml", __FILE__)
 
-require 'gdi/output_controller/repl_controller'
-require 'gdi/output_controller/trace_controller'
-require 'gdi/output_controller/locals_controller'
+Dir[File.expand_path("../output_controller/*.rb", __FILE__)].each {|f| require f }
 require 'gdi/html_styler'
 
 class Redcar::GDI::OutputController
@@ -16,6 +14,7 @@ class Redcar::GDI::OutputController
     ReplController.new(self, process_controller)
     TraceController.new(self, process_controller)
     LocalsController.new(self, process_controller)
+    BreakpointsController.new(self, process_controller)
 
     process_controller.add_listener(:run) { start }
     process_controller.add_listener(:process_halted) { status("Halted") }
