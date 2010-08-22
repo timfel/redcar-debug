@@ -70,6 +70,6 @@ class Redcar::GDI::OutputController
   end
 
   def title
-    "GDI Session"
+    "GDI: #{@process_controller.commandline}"
   end
 end

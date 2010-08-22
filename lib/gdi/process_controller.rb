@@ -40,12 +40,12 @@ class Redcar::GDI::ProcessController
     @stdin.flush
   end
 
-  def process(text)
-    text
+  def commandline
+    "#{@model.class::Commandline} #{@connection} #{@arguments}"
   end
 
   def run_posix
-    @stdin, @stdout = Open3::popen3("#{@model.class::Commandline} #{@connection} #{@arguments} 2>&1")
+    @stdin, @stdout = Open3::popen3("#{commandline} 2>&1")
     @output_thread = Thread.new do
       sleep 1
       begin
