@@ -1,21 +1,21 @@
 require 'gdi/debugger'
 
-class Redcar::GDI::Debugger::JDB < Redcar::GDI::Debugger
+class Redcar::GDI::Debugger::Hijack < Redcar::GDI::Debugger
   class << self
     def commandline
-      "jdb -attach "
+      "hijack "
     end
 
     def backtrace
-      "where"
+      "NOT SUPPORTED"
     end
 
     def locals
-      "locals"
+      "NOT SUPPORTED"
     end
 
     def breakpoints
-      "clear"
+      "NOT SUPPORTED"
     end
   end
 end
