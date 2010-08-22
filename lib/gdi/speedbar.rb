@@ -11,7 +11,7 @@ class Redcar::GDI::Speedbar < Redcar::Speedbar
   def initialize(model)
     super()
     self.model = model
-    label_cmd.text = model.commandline
+    label_cmd.text = model::Commandline
   end
 
   def after_draw

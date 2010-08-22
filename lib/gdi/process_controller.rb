@@ -1,4 +1,5 @@
 require 'open3'
+require 'timeout'
 require 'gdi/output_controller'
 
 class Redcar::GDI::ProcessController
@@ -11,12 +12,10 @@ class Redcar::GDI::ProcessController
   attr_accessor :breakpoints
 
   def initialize(options)
-    @model       = options[:model]
+    @output      = Redcar::GDI::OutputController.new(self)
+    @model       = options[:model].new(@output, self)
     @connection  = options[:connection]
     @arguments   = options[:arguments]
-    @breakpoints = Breakpoints.new(self)
-
-    Redcar::GDI::OutputController.new(self)
   end
 
   def close
@@ -36,10 +35,6 @@ class Redcar::GDI::ProcessController
     [:osx, :linux].include? Redcar.platform ? run_posix : run_windows
   end
 
-  def prompt_ready?(stdout)
-    !stdout.end_with?("\n")
-  end
-
   def input(text)
     @stdin.puts(text)
     @stdin.flush
@@ -50,7 +45,7 @@ class Redcar::GDI::ProcessController
   end
 
   def run_posix
-    @stdin, @stdout = Open3::popen3("#{@model.commandline} #{@connection} #{@arguments} 2>&1")
+    @stdin, @stdout = Open3::popen3("#{@model.class::Commandline} #{@connection} #{@arguments} 2>&1")
     @output_thread = Thread.new do
       sleep 1
       begin
@@ -61,7 +56,7 @@ class Redcar::GDI::ProcessController
           buf = @stdout.readpartial(BUFFER_SIZE)
           notify_listeners(:stdout_ready, buf)
           if buf.size < BUFFER_SIZE
-            notify_listeners(prompt_ready?(buf) ? :process_halted : :process_resumed)
+            notify_listeners(@model.prompt_ready?(buf) ? :process_halted : :process_resumed)
           end
         end
       rescue Exception => e
@@ -75,49 +70,6 @@ class Redcar::GDI::ProcessController
   # No windows support, sorry
   def run_windows
     notify_listeners(:stdout, "Sorry, windows is not supported at this time")
-  end
-
-  # Step to next line in current file
-  def step_over
-    input(model.step_over)
-  end
-
-  # Step into the next function
-  def step_into
-    input(model.step_into)
-  end
-
-  # Return from of the current function
-  def step_return
-    input(model.step_return)
-  end
-
-  # Stop NOW
-  def halt
-    input(model.halt)
-  end
-
-  def backtrace
-    input(model.backtrace)
-    wait_for {|output| prompt_ready? output }
-  end
-
-  def locals
-    input(model.locals)
-    wait_for {|output| prompt_ready? output }
-  end
-
-  def breakpoints
-    input(model.breakpoints)
-    wait_for {|output| prompt_ready? output }
-  end
-
-  def add_breakpoint(element)
-    model.add_breakpoint(element)
-  end
-
-  def remove_breakpoint(element)
-    model.remove_breakpoint(element)
   end
 
   def wait_for
@@ -143,17 +95,5 @@ class Redcar::GDI::ProcessController
     end
 
     buffer
-  end
-
-  class Breakpoints < Array
-    def initialize(controller)
-      @model = controller
-      super()
-    end
-
-    def << element
-      @model.add_breakpoint(element)
-      super(element)
-    end
   end
 end

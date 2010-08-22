@@ -10,19 +10,5 @@
 
 %span#status
 
-%span.tab REPL
-#repl-window.window
-  %span#repl
-  %form
-    %input#input{:type => "text"}
-
-%span.tab Backtrace
-.window
-  %span#trace
-
-.notebook
-  %span#locals-tab.tab Local Variables
-  %span#breakpoints-tab.tab{:class => "disabled"} Breakpoints
-  .window
-    %span#locals
-    %span#breakpoints{:style => "display:none"}
+- for element in @html_elements
+  = render(element)

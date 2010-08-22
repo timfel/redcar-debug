@@ -1,20 +1,11 @@
-require File.expand_path("../../../vendor/haml/lib/haml", __FILE__)
-
-Dir[File.expand_path("../output_controller/*.rb", __FILE__)].each {|f| require f }
-require 'gdi/html_styler'
-
 class Redcar::GDI::OutputController
+  extend Redcar::GDI::Autoloader
+  include Redcar::GDI::HtmlStyler
   include Redcar::HtmlController
   include Redcar::Observable
-  include HtmlStyler
 
   def initialize(process_controller)
     @process_controller = process_controller
-
-    ReplController.new(self, process_controller)
-    TraceController.new(self, process_controller)
-    LocalsController.new(self, process_controller)
-    BreakpointsController.new(self, process_controller)
 
     process_controller.add_listener(:run) { start }
     process_controller.add_listener(:process_halted) { status("Halted") }
@@ -23,7 +14,9 @@ class Redcar::GDI::OutputController
   end
 
   def ask_before_closing
-    "This tab contains a running debugger. \n\nKill the debugger and close?"
+    if @process_controller.running?
+      "This tab contains a running debugger. \n\nKill the debugger and close?"
+    end
   end
 
   def append(text, id)
@@ -44,8 +37,8 @@ class Redcar::GDI::OutputController
   end
 
   def index
-    rhtml = Haml::Engine.new(File.read(File.expand_path("../../../views/index.haml", __FILE__)))
-    rhtml.render(binding)
+    @html_elements = @process_controller.model.class.html_elements
+    render("index")
   end
 
   def input(event, text)

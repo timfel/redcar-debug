@@ -1,29 +1,17 @@
 class Redcar::GDI::OutputController
-  class ReplController
+  class ReplController < Base
     def initialize(output_controller, process_controller)
-      @output_controller = output_controller
-      @process_controller = process_controller
-
-      output_controller.add_listener(:stdin_ready) {|cmd| input(cmd) }
-
-      process_controller.add_listener(:process_halted) { show_prompt }
-      process_controller.add_listener(:process_resumed) { hide_prompt }
-      process_controller.add_listener(:process_finished) { hide_prompt }
-      process_controller.add_listener(:stdout_ready) {|out| print(out, "stdout") }
-      process_controller.add_listener(:stderr_ready) {|out| print(out, "stderr") }
+      super
+      add_listeners
     end
 
-    def execute(*args)
-      @output_controller.execute(*args)
-    end
-
-    def append(text)
-      @output_controller.append(text, "repl")
-    end
-
-    # TODO: Hook up colours
-    def process(text)
-      text.gsub("\n", "<br>")
+    def add_listeners
+      @output_controller.add_listener(:stdin_ready) {|cmd| input(cmd) }
+      @process_controller.add_listener(:process_halted) { show_prompt }
+      @process_controller.add_listener(:process_resumed) { hide_prompt }
+      @process_controller.add_listener(:process_finished) { hide_prompt }
+      @process_controller.add_listener(:stdout_ready) {|out| print(out, "stdout") }
+      @process_controller.add_listener(:stderr_ready) {|out| print(out, "stderr") }
     end
 
     def show_prompt
@@ -35,7 +23,7 @@ class Redcar::GDI::OutputController
     end
 
     def print(out, cssclass)
-      append(<<-HTML)
+      append(<<-HTML, "repl")
       <span class="#{cssclass}">#{process(out)}</span>
       HTML
       execute(<<-JAVASCRIPT)
@@ -47,6 +35,5 @@ class Redcar::GDI::OutputController
       print(process("#{cmd}\n"), "stdout")
       @process_controller.input(cmd)
     end
-
   end
 end
