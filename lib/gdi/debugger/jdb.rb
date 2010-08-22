@@ -27,7 +27,7 @@ class Redcar::GDI::Debugger::JDB < Redcar::GDI::Debugger
   def self.html_elements
     [ {:partial => "repl"},
       {:partial => "notebook", :windows => [
-        {:name => "Backtrace", :id => "locals"},
+        {:name => "Backtrace", :id => "backtrace"},
         {:name => "Threads", :id => "threads"} ] },
       {:partial => "notebook", :windows => [
         {:name => "Locals", :id => "locals"},
