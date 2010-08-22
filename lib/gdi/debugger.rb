@@ -1,6 +1,15 @@
-require 'gdi/speedbar'
-
 class Redcar::GDI::Debugger
+  extend Redcar::GDI::Autoloader
+
+  def initialize(output, process)
+    @process = process
+    @output = output
+    Redcar::GDI::OutputController::ReplController.new(output, process)
+  end
+
+  def wait_for(&block)
+    @process.wait_for(&block)
+  end
 
   class << self
     # Subscribe each subclass to the plugin
@@ -13,21 +22,6 @@ class Redcar::GDI::Debugger
       super.split("::").last
     end
   end
-
-  def self.abstract(*symbols)
-    symbols.each do |symbol|
-      self.class_eval(<<-RUBY)
-        def self.#{symbol}
-          raise NotImplementedError.new('You must implement #{symbol}.')
-        end
-      RUBY
-    end
-  end
-
-  abstract :commandline, :backtrace, :step_into, :step_over, :step_return, :halt,
-    :locals, :breakpoints
-
 end
 
 Dir.glob(File.expand_path("../debugger/*.rb", __FILE__)).each {|f| require f }
-
