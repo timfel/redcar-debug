@@ -2,6 +2,7 @@ class Redcar::GDI::Debugger::GDB < Redcar::GDI::Debugger
   Commandline = "gdb -p "
   Backtrace = "bt"
   Locals = "info locals"
+  Registers = "info reg"
   Breakpoints = "info breakpoints"
 
   def initialize(output, process)
@@ -28,6 +29,7 @@ class Redcar::GDI::Debugger::GDB < Redcar::GDI::Debugger
       {:partial => "window", :name => "Backtrace", :id => "backtrace"},
       {:partial => "notebook", :windows => [
         {:name => "Locals", :id => "locals"},
+        {:name => "Registers", :id => "registers"},
         {:name => "Breakpoints", :id => "breakpoints"} ] } ]
   end
 end
