@@ -2,7 +2,18 @@ $(document).ready ->
   input = $("#input")
   output = $("#output")
   input.focus()
-  
+
+  $(".notebook").children(".tab").click (e) ->
+    try
+      e.preventDefault()
+      $(this).siblings().addClass("disabled")
+      $(this).removeClass("disabled")
+      $(this).parent().children(".window").children("span").hide()
+      output_buffer = "#" + $(this).attr("id").replace("-tab","")
+      $(output_buffer).show()
+    catch error
+      alert error.message
+
   $("form").submit (e) ->
     e.preventDefault()
     value = input.val()

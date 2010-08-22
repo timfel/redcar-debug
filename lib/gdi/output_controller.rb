@@ -3,15 +3,15 @@ require File.expand_path("../../../vendor/haml/lib/haml", __FILE__)
 require 'gdi/output_controller/repl_controller'
 require 'gdi/output_controller/trace_controller'
 require 'gdi/output_controller/locals_controller'
+require 'gdi/html_styler'
 
 class Redcar::GDI::OutputController
   include Redcar::HtmlController
   include Redcar::Observable
+  include HtmlStyler
 
   def initialize(process_controller)
     @process_controller = process_controller
-    @view_root = File.expand_path("../../../views/", __FILE__)
-    p @view_root
 
     ReplController.new(self, process_controller)
     TraceController.new(self, process_controller)
