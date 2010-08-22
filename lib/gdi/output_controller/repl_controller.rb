@@ -23,16 +23,14 @@ class Redcar::GDI::OutputController
     end
 
     def print(out, cssclass)
-      append(<<-HTML, "repl")
-      <span class="#{cssclass}">#{process(out)}</span>
-      HTML
+      append("<span class=\"#{cssclass}\">#{out}</span>", "repl")
       execute(<<-JAVASCRIPT)
       $("#repl-window").attr({ scrollTop: $("#repl-window").attr("scrollHeight") });
       JAVASCRIPT
     end
 
     def input(cmd)
-      print(process("#{cmd}\n"), "stdout")
+      print("#{cmd}\n", "stdout")
       @process_controller.input(cmd)
     end
   end

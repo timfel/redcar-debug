@@ -1,5 +1,6 @@
 class Redcar::GDI::OutputController::Base
   extend Redcar::GDI::Autoloader
+  include Redcar::GDI::OutputHelper
   
   def initialize(output_controller, process_controller)
     @output_controller = output_controller
@@ -10,12 +11,7 @@ class Redcar::GDI::OutputController::Base
     @output_controller.execute(*args)
   end
   
-  def append(text, css_id)
-    @output_controller.append(text, css_id)
-  end
-  
-  # TODO: Hook up colours
-  def process(text)
-    text.gsub("\n", "<br>")
+  def append(*args)
+    @output_controller.append(*args)
   end
 end

@@ -1,6 +1,6 @@
 require File.expand_path("../../../vendor/haml/lib/haml", __FILE__)
 
-module Redcar::GDI::HtmlStyler
+module Redcar::GDI::OutputHelper
   SYSTEM_BGCOLOR = Swt::Widgets::Display.current.system_color Swt::SWT::COLOR_WIDGET_BACKGROUND
   VIEW_ROOT = File.expand_path("../../../views/", __FILE__)
   BGCOLOR = [:red, :green, :blue].inject("#") {|str,color| str + SYSTEM_BGCOLOR.send(color).to_s(16) }
@@ -17,5 +17,10 @@ module Redcar::GDI::HtmlStyler
 
     @options = render_options
     Haml::Engine.new(File.read(template)).render(binding)
+  end
+
+  # TODO: Hook up colours
+  def process(text)
+    text.to_s.gsub("\n", "<br>")
   end
 end

@@ -1,6 +1,6 @@
 class Redcar::GDI::OutputController
   extend Redcar::GDI::Autoloader
-  include Redcar::GDI::HtmlStyler
+  include Redcar::GDI::OutputHelper
   include Redcar::HtmlController
   include Redcar::Observable
 
@@ -21,13 +21,13 @@ class Redcar::GDI::OutputController
 
   def append(text, id)
     execute(<<-JAVASCRIPT)
-    $("##{id}").append(#{text.inspect});
+    $("##{id}").append(#{process(text).inspect});
     JAVASCRIPT
   end
 
   def replace(text, id)
     execute(<<-JAVASCRIPT)
-    $("##{id}").html(#{text.inspect});
+    $("##{id}").html(#{process(text).inspect});
     JAVASCRIPT
   end
 
