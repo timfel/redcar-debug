@@ -16,8 +16,6 @@ module Redcar::GDI::HtmlStyler
     end
 
     @options = render_options
-    p "Rendering #{template} with #{@options}"
-
     Haml::Engine.new(File.read(template)).render(binding)
   end
 end
