@@ -21,7 +21,22 @@ class Redcar::GDI::Debugger
     def name
       super.split("::").last
     end
+
+    def abstract(*symbols)
+      symbols.each do |symbol|
+        self.class_eval(<<-RUBY)
+        def #{symbol}
+          raise NotImplementedError.new('You must implement #{symbol}.')
+        end
+        RUBY
+      end
+    end
+
   end
+
+  # Interface contract for debugger models
+  abstract :"prompt_ready?", :"self.html_elements"
+
 end
 
 Dir.glob(File.expand_path("../debugger/*.rb", __FILE__)).each {|f| require f }
