@@ -20,6 +20,7 @@ module Redcar::GDI::OutputHelper
   end
 
   # TODO: Hook up colours
+  # TODO: Hook up linking
   def process(text)
     text.to_s.gsub("\n", "<br>")
   end
