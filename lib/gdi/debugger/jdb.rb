@@ -30,6 +30,10 @@ class Redcar::GDI::Debugger::JDB < Redcar::GDI::Debugger
     @breakpoint_hit = (stdout =~ /\[[0-9]+\] $/)
   end
 
+  def src_extension
+    /\.java/
+  end
+
   def self.html_elements
     [ {:partial => "repl"},
       {:partial => "notebook", :windows => [

@@ -24,6 +24,10 @@ class Redcar::GDI::Debugger::GDB < Redcar::GDI::Debugger
     stdout.end_with? "(gdb) "
   end
 
+  def src_extension
+    /\.(?:cpp|c)/
+  end
+
   def self.html_elements
     [ {:partial => "repl"},
       {:partial => "window", :name => "Backtrace", :id => "backtrace"},

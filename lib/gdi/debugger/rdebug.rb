@@ -35,6 +35,11 @@ class Redcar::GDI::Debugger::RDebug < Redcar::GDI::Debugger
         {:name => "Breakpoints", :id => "breakpoints"} ] } ]
   end
 
+  def src_extension
+    /\.rb/
+  end
+
+  # Hijack just forces rdebug into a process, so it's not much different
   class Hijack < RDebug
     Commandline = "hijack "
 
