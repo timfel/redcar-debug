@@ -1,4 +1,5 @@
 (function() {
+  var composite_layout_function;
   $(document).ready(function() {
     var input, output;
     input = $("#input");
@@ -26,7 +27,8 @@
       input.val("");
       return input.focus();
     });
-    return $("input").keydown(function(event) {
+    $(window).resize(composite_layout_function);
+    $("input").keydown(function(event) {
       event = event || window.event;
       if ((event.keyCode === 38)) {
         return rubyCall("input", ["stdin_keypress", "up"]);
@@ -34,5 +36,15 @@
         return rubyCall("input", ["stdin_keypress", "down"]);
       }
     });
+    return composite_layout_function();
   });
+  composite_layout_function = function() {
+    if (($(window).width() > $(window).height())) {
+      $(".composite").addClass("horizontal");
+      return $(".composite").removeClass("vertical");
+    } else {
+      $(".composite").removeClass("horizontal");
+      return $(".composite").addClass("vertical");
+    }
+  };
 })();

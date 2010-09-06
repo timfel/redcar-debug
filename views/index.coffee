@@ -10,7 +10,7 @@ $(document).ready ->
     $(this).parent().children(".window").children("span").hide()
     output_buffer = "#" + $(this).attr("id").replace("-tab","")
     $(output_buffer).show()
-    
+
   $("form").submit (e) ->
     e.preventDefault()
     value = input.val()
@@ -24,6 +24,8 @@ $(document).ready ->
     input.val ""
     input.focus()
 
+  $(window).resize composite_layout_function
+
   $("input").keydown (event) ->
     event = event || window.event
     # interesting events are 38 (keyup) and 40 (keydown)
@@ -32,4 +34,14 @@ $(document).ready ->
     else if (event.keyCode == 40)
       rubyCall "input", ["stdin_keypress", "down"]
 
+  composite_layout_function()
 
+composite_layout_function = ->
+    if ($(window).width() > $(window).height())
+      # Make horizontal
+      $(".composite").addClass("horizontal")
+      $(".composite").removeClass("vertical")
+    else
+      # Make vertical
+      $(".composite").removeClass("horizontal")
+      $(".composite").addClass("vertical")

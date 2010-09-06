@@ -1,11 +1,12 @@
 - tabs = @options[:windows]
 
-.notebook
-  %span{:id => "#{tabs.first[:id]}-tab", :class => "tab"}= tabs.first[:name]
-  - for tab in tabs[1..-1]
-    %span{:id => "#{tab[:id]}-tab", :class => "tab disabled"}= tab[:name]
+.composite
+  .notebook
+    %span{:id => "#{tabs.first[:id]}-tab", :class => "tab"}= tabs.first[:name]
+    - for tab in tabs[1..-1]
+      %span{:id => "#{tab[:id]}-tab", :class => "tab disabled"}= tab[:name]
 
-  .window
-    %span{:id => "#{tabs.first[:id]}"}
-    -for tab in tabs[1..-1]
-      %span{:id => "#{tab[:id]}", :style => "display:none"}
+    .window
+      %span{:id => "#{tabs.first[:id]}"}
+      -for tab in tabs[1..-1]
+        %span{:id => "#{tab[:id]}", :style => "display:none"}

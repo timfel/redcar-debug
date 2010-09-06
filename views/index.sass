@@ -1,4 +1,5 @@
 body
+  overflow-y: hidden
   font-size: 12
   form
     display: inline
@@ -11,29 +12,40 @@ body
       &:focus
         border: none
         outline: none
-  .tab
-    padding-left: 4px
-    padding-right: 4px
-    padding-top: 4px
-    background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0.25, rgb(135,176,247)),color-stop(0.55, rgb(171,199,245)),color-stop(0.85, rgb(230,240,255)))
-    background-image: -moz-linear-gradient(center bottom,rgb(135,176,247) 25%,rgb(171,199,245) 55%,rgb(230,240,255) 85%)
-    border-top-left-radius: 5px
-    border-top-right-radius: 5px
-    -moz-border-radius-topleft: 5px
-    -moz-border-radius-topright: 5px
-    border: 1px solid #777
-    border-bottom: 0px
-  .tab.disabled
-    background: transparent
-
-  .window
-    margin-bottom: 6px
-    left: 0px
-    background-color: #fff
-    border: 2px solid #87b0f7
-    padding: 1px
-    overflow-y: scroll
-    height: 28%
-    .stderr
-      color: red
+  .composite
+    &.vertical
+      padding-top: 12px
+      height: 32%
+      left: 0px
+      display: block
+    &.horizontal
+      height: 80%
+      width: 32%
+      margin-right: 8px
+      float: left
+      display: inline
+    .tab
+      height: 10%
+      padding-left: 4px
+      padding-right: 4px
+      padding-top: 4px
+      background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0.25, rgb(135,176,247)),color-stop(0.55, rgb(171,199,245)),color-stop(0.85, rgb(230,240,255)))
+      background-image: -moz-linear-gradient(center bottom,rgb(135,176,247) 25%,rgb(171,199,245) 55%,rgb(230,240,255) 85%)
+      border-top-left-radius: 5px
+      border-top-right-radius: 5px
+      -moz-border-radius-topleft: 5px
+      -moz-border-radius-topright: 5px
+      border: 1px solid #777
+      border-bottom: 0px
+      &.disabled
+        background: transparent
+    .window
+      height: 90%
+      width: 100%
+      background-color: #fff
+      border: 2px solid #87b0f7
+      padding: 1px
+      overflow-y: scroll
+      .stderr
+        color: red
 
