@@ -36,6 +36,7 @@ class Redcar::GDI::OutputController
     @tab = nil
   end
 
+  # XXX: Law-of-demeter
   def index
     @html_elements = @process_controller.model.class.html_elements
     render("index")
