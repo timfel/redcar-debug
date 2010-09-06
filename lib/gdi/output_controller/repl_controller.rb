@@ -44,9 +44,6 @@ class Redcar::GDI::OutputController
             when "up" then cmd_history.up
             when "down" then cmd_history.down
             end
-      p "=" * 10
-      p "RUNNING #{cmd}"
-      p "=" * 10
       execute(<<-JAVASCRIPT)
       $("#input")[0].value = "#{cmd}";
       JAVASCRIPT
