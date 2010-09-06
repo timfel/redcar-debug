@@ -63,7 +63,7 @@ class Redcar::GDI::OutputController
         # Ensure two notebooks, focus the currently unfocused one
         w.create_notebook
         w.set_focussed_notebook(w.nonfocussed_notebook)
-        w.notebook_orientation = :horizontal
+        w.notebook_orientation = :vertical
         @tab = w.new_tab(Redcar::HtmlTab)
         @tab.html_view.controller = self
       end
