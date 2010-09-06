@@ -12,20 +12,22 @@ class Redcar::GDI::Debugger::JDB < Redcar::GDI::Debugger
 
   def automatic_queries
     @process.add_listener(:prompt_ready) do
-      [:Backtrace, :Locals, :Breakpoints, :Threads].each do |query|
-        @process.input(self.class.const_get(query))
-        output = wait_for {|stdout| breakpoint_hit? stdout }
-        @output.replace(output, query.to_s.downcase)
+      if @breakpoint_hit
+        [:Backtrace, :Locals, :Breakpoints, :Threads].each do |query|
+          @process.input(self.class.const_get(query))
+          output = wait_for {|stdout| prompt_ready? stdout }
+          @output.replace(output, query.to_s.downcase)
+        end
       end
     end
   end
 
   def prompt_ready?(stdout)
-    stdout =~ /(>|\[[0-9]+\]) $/
+    breakpoint_hit?(stdout) || (stdout =~ /> $/)
   end
 
   def breakpoint_hit?(stdout)
-    /Breakpoint hit: .*\n+.*\[[0-9]+\] $/m
+    @breakpoint_hit = (stdout =~ /\[[0-9]+\] $/)
   end
 
   def self.html_elements
