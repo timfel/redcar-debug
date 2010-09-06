@@ -7,7 +7,7 @@ class Redcar::GDI::OutputController
   def initialize(process_controller)
     @process_controller = process_controller
 
-    process_controller.add_listener(:run) { start }
+    process_controller.add_listener(:run) { show_tab }
     process_controller.add_listener(:prompt_ready) { status("Ready") }
     process_controller.add_listener(:prompt_blocked) { status("Blocked") }
     process_controller.add_listener(:process_finished) { status("Finished") }
@@ -43,10 +43,6 @@ class Redcar::GDI::OutputController
 
   def input(event, text)
     notify_listeners(event.to_sym, text)
-  end
-
-  def start
-    show_tab
   end
 
   def status(text)
