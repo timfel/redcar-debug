@@ -27,8 +27,18 @@
       input.val("");
       return input.focus();
     });
+    $("a").click(function(event) {
+      event.preventDefault;
+      try {
+        rubyCall("input", ["open_file_request", $(this).attr('data-file'), $(this).attr('data-line')]);
+        return alert("open " + $(this).attr('data-file') + $(this).attr('data-line'));
+      } catch (e) {
+        return alert(e.message);
+      }
+    });
     $(window).resize(composite_layout_function);
-    $("input").keydown(function(event) {
+    composite_layout_function();
+    return $("input").keydown(function(event) {
       event = event || window.event;
       if ((event.keyCode === 38)) {
         return rubyCall("input", ["stdin_keypress", "up"]);
@@ -36,7 +46,6 @@
         return rubyCall("input", ["stdin_keypress", "down"]);
       }
     });
-    return composite_layout_function();
   });
   composite_layout_function = function() {
     if (($(window).width() > $(window).height())) {

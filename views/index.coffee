@@ -24,7 +24,15 @@ $(document).ready ->
     input.val ""
     input.focus()
 
+  $("a").click (event) ->
+    event.preventDefault
+    try
+      rubyCall "input", ["open_file_request", $(this).attr('data-file'), $(this).attr('data-line')]
+    catch e
+      alert(e.message)
+
   $(window).resize composite_layout_function
+  composite_layout_function()
 
   $("input").keydown (event) ->
     event = event || window.event
@@ -33,8 +41,6 @@ $(document).ready ->
       rubyCall "input", ["stdin_keypress", "up"]
     else if (event.keyCode == 40)
       rubyCall "input", ["stdin_keypress", "down"]
-
-  composite_layout_function()
 
 composite_layout_function = ->
     if ($(window).width() > $(window).height())

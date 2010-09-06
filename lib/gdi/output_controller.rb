@@ -21,13 +21,13 @@ class Redcar::GDI::OutputController
 
   def append(text, id)
     execute(<<-JAVASCRIPT)
-    $("##{id}").append(#{process(text).inspect});
+    $("##{id}").append(#{process(text, model).inspect});
     JAVASCRIPT
   end
 
   def replace(text, id)
     execute(<<-JAVASCRIPT)
-    $("##{id}").html(#{process(text).inspect});
+    $("##{id}").html(#{process(text, model).inspect});
     JAVASCRIPT
   end
 
