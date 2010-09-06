@@ -14,7 +14,7 @@ class Redcar::GDI::Debugger::JDB < Redcar::GDI::Debugger
     @process.add_listener(:process_halted) do
       [:Backtrace, :Locals, :Breakpoints, :Threads].each do |query|
         @process.input(self.class.const_get(query))
-        output = wait_for {|stdout| prompt_ready? stdout }
+        output = wait_for {|stdout| breakpoint_hit? stdout }
         @output.replace(output, query.to_s.downcase)
       end
     end
@@ -22,6 +22,10 @@ class Redcar::GDI::Debugger::JDB < Redcar::GDI::Debugger
 
   def prompt_ready?(stdout)
     stdout =~ /(>|\[[0-9]+\]) $/
+  end
+
+  def breakpoint_hit?(stdout)
+    /Breakpoint hit: .*\n+.*\[[0-9]+\] $/m
   end
 
   def self.html_elements
