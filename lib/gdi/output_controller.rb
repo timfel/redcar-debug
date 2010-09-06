@@ -37,8 +37,12 @@ class Redcar::GDI::OutputController
   end
 
   # XXX: Law-of-demeter
+  def model
+    @process_controller.model
+  end
+
   def index
-    @html_elements = @process_controller.model.class.html_elements
+    @html_elements = model.class.html_elements
     render("index")
   end
 
