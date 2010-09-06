@@ -13,7 +13,7 @@
       output_buffer = "#" + $(this).attr("id").replace("-tab", "");
       return $(output_buffer).show();
     });
-    return $("form").submit(function(e) {
+    $("form").submit(function(e) {
       var value;
       e.preventDefault();
       value = input.val();
@@ -25,6 +25,14 @@
       }
       input.val("");
       return input.focus();
+    });
+    return $("input").keydown(function(event) {
+      event = event || window.event;
+      if ((event.keyCode === 38)) {
+        return rubyCall("input", ["stdin_keypress", "up"]);
+      } else if ((event.keyCode === 40)) {
+        return rubyCall("input", ["stdin_keypress", "down"]);
+      }
     });
   });
 })();

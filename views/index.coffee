@@ -24,3 +24,12 @@ $(document).ready ->
     input.val ""
     input.focus()
 
+  $("input").keydown (event) ->
+    event = event || window.event
+    # interesting events are 38 (keyup) and 40 (keydown)
+    if (event.keyCode == 38)
+      rubyCall "input", ["stdin_keypress", "up"]
+    else if (event.keyCode == 40)
+      rubyCall "input", ["stdin_keypress", "down"]
+
+
