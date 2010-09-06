@@ -46,8 +46,8 @@ class Redcar::GDI::OutputController
     render("index")
   end
 
-  def input(event, text)
-    notify_listeners(event.to_sym, text)
+  def input(event, *text)
+    notify_listeners(event.to_sym, *text)
   end
 
   def status(text)
