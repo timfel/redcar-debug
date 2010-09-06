@@ -11,8 +11,8 @@ class Redcar::GDI::OutputController
     def add_listeners
       @output_controller.add_listener(:stdin_ready) {|cmd| input(cmd) }
       @output_controller.add_listener(:stdin_keypress) {|key| keypress(key) }
-      @process_controller.add_listener(:process_halted) { show_prompt }
-      @process_controller.add_listener(:process_resumed) { hide_prompt }
+      @process_controller.add_listener(:prompt_ready) { show_prompt }
+      @process_controller.add_listener(:prompt_blocked) { hide_prompt }
       @process_controller.add_listener(:process_finished) { hide_prompt }
       @process_controller.add_listener(:stdout_ready) {|out| print(out, "stdout") }
       @process_controller.add_listener(:stderr_ready) {|out| print(out, "stderr") }

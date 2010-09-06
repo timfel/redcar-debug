@@ -8,8 +8,8 @@ class Redcar::GDI::OutputController
     @process_controller = process_controller
 
     process_controller.add_listener(:run) { start }
-    process_controller.add_listener(:process_halted) { status("Halted") }
-    process_controller.add_listener(:process_resumed) { status("Running") }
+    process_controller.add_listener(:prompt_ready) { status("Ready") }
+    process_controller.add_listener(:prompt_blocked) { status("Blocked") }
     process_controller.add_listener(:process_finished) { status("Finished") }
   end
 

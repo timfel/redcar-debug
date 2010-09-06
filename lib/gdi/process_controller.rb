@@ -56,7 +56,7 @@ class Redcar::GDI::ProcessController
           buf = @stdout.readpartial(BUFFER_SIZE)
           notify_listeners(:stdout_ready, buf)
           if buf.size < BUFFER_SIZE
-            notify_listeners(@model.prompt_ready?(buf) ? :process_halted : :process_resumed)
+            notify_listeners(@model.prompt_ready?(buf) ? :prompt_ready : :prompt_blocked)
           end
         end
       rescue Exception => e

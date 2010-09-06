@@ -11,7 +11,7 @@ class Redcar::GDI::Debugger::JDB < Redcar::GDI::Debugger
   end
 
   def automatic_queries
-    @process.add_listener(:process_halted) do
+    @process.add_listener(:prompt_ready) do
       [:Backtrace, :Locals, :Breakpoints, :Threads].each do |query|
         @process.input(self.class.const_get(query))
         output = wait_for {|stdout| breakpoint_hit? stdout }
