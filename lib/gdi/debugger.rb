@@ -15,14 +15,18 @@ class Redcar::GDI::Debugger
   def find_links(text)
     links = []
     while (match_begin = text =~ /(#{file_pattern})/)
-      links << Redcar::GDI::FileLink.new.tap do |l|
-        l.match = $1
-        l.file = $2
-        l.line = $3
-      end
+      links << add_file_link($1, $2, $3)
       text = text[match_begin + links.last.match.length..-1]
     end
     links
+  end
+
+  def add_file_link(matched_text, file_part, lineno_part)
+    Redcar::GDI::FileLink.new.tap do |l|
+      l.match = matched_text
+      l.file = file_part
+      l.line = lineno_part
+    end
   end
 
   # The default file pattern matches full path files with the source
