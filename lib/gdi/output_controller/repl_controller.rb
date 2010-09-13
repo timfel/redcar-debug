@@ -1,3 +1,5 @@
+require 'gdi/output_controller/base'
+
 class Redcar::GDI::OutputController
   class ReplController < Base
     attr_reader :cmd_history

@@ -5,6 +5,15 @@ class Redcar::GDI::Debugger::RDebug < Redcar::GDI::Debugger
   Breakpoints = "info breakpoints"
   Variables = "info variables"
 
+  prompt_ready? {|stdout| stdout =~ /\(rdb:[0-9]+\) $/ }
+  src_extensions /\.(?:rb|rhtml|html\.erb)/
+  html_elements({:partial => "repl"},
+    {:partial => "window", :name => "Backtrace", :id => "backtrace"},
+    {:partial => "notebook", :windows => [
+      {:name => "Variables", :id => "variables"},
+      {:name => "Threads", :id => "threads"},
+      {:name => "Breakpoints", :id => "breakpoints"} ] })
+
   def initialize(output, process)
     super
     automatic_queries
@@ -20,37 +29,5 @@ class Redcar::GDI::Debugger::RDebug < Redcar::GDI::Debugger
     @process.input(self.class.const_get(info))
     output = wait_for {|stdout| prompt_ready? stdout }
     @output.replace(output, info.to_s.downcase)
-  end
-
-  def prompt_ready?(stdout)
-    stdout =~ /\(rdb:[0-9]+\) $/
-  end
-
-  def self.html_elements
-    [ {:partial => "repl"},
-      {:partial => "window", :name => "Backtrace", :id => "backtrace"},
-      {:partial => "notebook", :windows => [
-        {:name => "Variables", :id => "variables"},
-        {:name => "Threads", :id => "threads"},
-        {:name => "Breakpoints", :id => "breakpoints"} ] } ]
-  end
-
-  def src_extension
-    /\.rb/
-  end
-
-  # Hijack just forces rdebug into a process, so it's not much different
-  class Hijack < RDebug
-    Commandline = "hijack "
-
-    def query(info)
-      # Hijack usually starts with an IRB prompt to setup breakpoints
-      # At this point we cannot run our info queries
-      super unless @irb_prompt
-    end
-
-    def prompt_ready?(stdout)
-      (@irb_prompt =~ />> $/) || super
-    end
   end
 end

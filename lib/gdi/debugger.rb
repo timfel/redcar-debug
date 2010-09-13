@@ -1,67 +1,72 @@
-class Redcar::GDI::Debugger
-  extend Redcar::GDI::Autoloader
+require 'gdi/debugger/files/default_linker'
 
-  def initialize(output, process)
-    @process = process
-    @output = output
-    Redcar::GDI::OutputController::ReplController.new(output, process)
-  end
+class Redcar::GDI
+  class Debugger
+    class << self
+      # Subscribe each subclass to the GDI plugin
+      def inherited(clazz)
+        Redcar::GDI.debuggers << clazz
+        super(clazz)
+      end
 
-  def wait_for(&block)
-    @process.wait_for(&block)
-  end
+      @breakpoints = []
+      # Class instance variable to keep track of breakpoints to set on debug-start.
+      # These breakpoints can be set on a file and will be added to each debugger instance
+      def breakpoints
+        @breakpoints
+      end
 
-  # Find links to files in the textual output
-  def find_links(text)
-    links = []
-    while (match_begin = text =~ /(#{file_pattern})/)
-      links << add_file_link($1, $2, $3)
-      text = text[match_begin + links.last.match.length..-1]
-    end
-    links
-  end
+      # The name for display in the menu. Defaults to classname
+      def display_name(name = nil)
+        name ? @@name = name : self.name
+      end
 
-  def add_file_link(matched_text, file_part, lineno_part)
-    Redcar::GDI::FileLink.new.tap do |l|
-      l.match = matched_text
-      l.file = file_part
-      l.line = lineno_part
-    end
-  end
+      # A proc to determine whether the prompt is ready for a given debugger
+      def prompt_ready?(stdout=nil)
+        @prompt_ready = Proc.new if block_given?
+        @prompt_ready.try(:call, stdout) if stdout
+      end
 
-  # The default file pattern matches full path files with the source
-  # extension of the debugger, followed by a colon and a line-number
-  def file_pattern
-    path_segments = /(?:\/[^:\/]+)+/
-    line_number   = /[1-9][0-9]*/
-    /(#{path_segments}#{src_extension}):(#{line_number})/
-  end
+      # An array with html element definitions (as hashes)
+      def html_elements(*elements)
+        elements.any? ? @html_elements = elements : @html_elements ||= []
+      end
 
-  class << self
-    # Subscribe each subclass to the plugin
-    def inherited(clazz)
-      Redcar::GDI.debuggers << clazz
-      super(clazz)
-    end
+      # The class to use for linking files to textual output
+      def file_linker(klass = nil)
+        klass ? @file_linker = klass : @file_linker ||= Files::DefaultLinker
+      end
 
-    def name
-      super.split("::").last
-    end
-
-    def abstract(*symbols)
-      symbols.each do |symbol|
-        self.class_eval(<<-RUBY)
-        def #{symbol}
-          raise NotImplementedError.new('You must implement #{symbol}.')
-        end
-        RUBY
+      # A regex or string to match the extensions of src files debugged by this debugger
+      def src_extensions(extensions = nil)
+        extensions ? @src_extensions = extensions : @src_extensions
       end
     end
 
-  end
+    attr_reader :output, :process
 
-  # Interface contract for debugger models
-  abstract :"prompt_ready?", :"self.html_elements", :src_extension
+    def initialize(output, process)
+      @process = process
+      @output = output
+      @file_linker = self.class.file_linker.new(self)
+    end
+
+    def wait_for(&block)
+      process.wait_for(&block)
+    end
+
+    def prompt_ready?(stdout)
+      self.class.prompt_ready?(stdout)
+    end
+
+    def find_links(text)
+      @file_linker.find_links(text)
+    end
+
+    def src_extensions
+      self.class.src_extensions
+    end
+  end
 end
 
 Dir.glob(File.expand_path("../debugger/*.rb", __FILE__)).each {|f| require f }

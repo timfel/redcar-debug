@@ -1,9 +1,11 @@
 require File.expand_path("../../../vendor/haml/lib/haml", __FILE__)
 
 module Redcar::GDI::OutputHelper
-  SYSTEM_BGCOLOR = Swt::Widgets::Display.current.system_color Swt::SWT::COLOR_WIDGET_BACKGROUND
+  Swt::Widgets::Display.default.async_exec do
+    SYSTEM_BGCOLOR = Swt::Widgets::Display.default.system_color Swt::SWT::COLOR_WIDGET_BACKGROUND
+    BGCOLOR = [:red, :green, :blue].inject("#") {|str,color| str + SYSTEM_BGCOLOR.send(color).to_s(16) }
+  end
   VIEW_ROOT = File.expand_path("../../../views/", __FILE__)
-  BGCOLOR = [:red, :green, :blue].inject("#") {|str,color| str + SYSTEM_BGCOLOR.send(color).to_s(16) }
 
   def render(options, render_options = {})
     if options.respond_to? :to_str
