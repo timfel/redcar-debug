@@ -6,8 +6,9 @@ module GDI::Debugger::Files
     def find_links(text)
       links = []
       while (match_begin = text =~ /(#{file_pattern})/)
-        links << add_file_link($1, $2, $3)
-        text = text[match_begin + links.last.match.length..-1]
+        link = add_file_link($1, $2, $3)
+        links << link
+        text = text[match_begin + link[:match].length..-1]
       end
       links
     end
