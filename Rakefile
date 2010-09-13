@@ -1,8 +1,3 @@
-
-def missing(tool)
-  "You need #{tool} to compile this plugin. Try running 'rake gems'"
-end
-
 desc "Compile resources"
 task :compile => [:gems] do
   p "git submodule init && git submodule sync && git submodule update"
@@ -19,7 +14,12 @@ end
 
 desc "Install required gems"
 task :gems do
-  system("gem install bundler")
+  begin
+    require 'bundler'
+  rescue LoadError
+    system("gem install bundler")
+    require 'bundler'
+  end
   system("bundle install")
 end
 
