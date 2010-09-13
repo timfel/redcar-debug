@@ -18,5 +18,9 @@ class GDI
       tab = Redcar.app.focussed_window.focussed_notebook.focussed_tab
       # TODO: What now? Get the line? The breakpoint?
     end
+
+    def set_breakpoint(debugger, breakpoint)
+      debugger.breakpoints << breakpoint
+    end
   end
 end

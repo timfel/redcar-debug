@@ -1,10 +1,17 @@
 require 'spec_helper'
 
 describe "Debugger" do
+  class AFileLinker < GDI::Debugger::Files::Base
+  end
+
   class ADebugger < GDI::Debugger
     Commandline = "debug -at "
 
     display_name "Friendly Name"
+    html_elements({:partial => "part"})
+    file_linker AFileLinker
+    prompt_ready? {|stdout| stdout.end_with? "prompt:" }
+    src_extensions /_spec\.rb/
   end
 
   class BDebugger < GDI::Debugger
@@ -25,26 +32,32 @@ describe "Debugger" do
   end
 
   it "should allow defining the html view via :html_elements" do
-    pending
+    ADebugger.html_elements.should == [:partial => "part"]
   end
 
   it "should allow setting a file linker implementation via :file_linker" do
-    pending
+    ADebugger.file_linker.should == AFileLinker
   end
 
   it "should provide a default file linker implementation" do
-    pending
+    BDebugger.file_linker.should == GDI::Debugger::Files::DefaultLinker
   end
 
   it "should allow prompt recognition via a :prompt_ready? proc" do
-    pending
+    ADebugger.prompt_ready?("prompt:").should == true
+    ADebugger.prompt_ready?("text\n").should == false
   end
 
   it "should keep the breakpoints set for the debugged file type" do
     pending
   end
 
-  it "should know which extensions to match for src files via :src_extensions" do
+  it "should add new breakpoints to running instances" do
     pending
+  end
+
+  it "should know which extensions to match for src files via :src_extensions" do
+    ("some_spec.rb" =~ ADebugger.src_extensions).should_not == nil
+    ("nospec.rb" =~ ADebugger.src_extensions).should == nil
   end
 end
