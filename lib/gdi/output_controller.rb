@@ -14,6 +14,7 @@ class GDI
       process_controller.add_listener(:prompt_ready) { status("Ready") }
       process_controller.add_listener(:prompt_blocked) { status("Blocked") }
       process_controller.add_listener(:process_finished) { status("Finished") }
+      add_listener(:open_file_request) {|file,line| open_file(file, line.to_i) }
     end
 
     def ask_before_closing
@@ -32,6 +33,15 @@ class GDI
       execute(<<-JAVASCRIPT)
       $("##{id}").html(#{process(text, model).inspect});
       JAVASCRIPT
+    end
+
+    def open_file(file, line)
+      win = Redcar.app.focussed_window
+      win.set_focussed_notebook(win.nonfocussed_notebook)
+      Redcar::Project::Manager.open_file(file)
+      doc = win.focussed_notebook_tab.edit_view.document
+      doc.cursor_offset = doc.offset_at_line(line - 1)
+      doc.scroll_to_line(line)
     end
 
     def close

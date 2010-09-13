@@ -11,6 +11,13 @@ $(document).ready ->
     output_buffer = "#" + $(this).attr("id").replace("-tab","")
     $(output_buffer).show()
 
+  $("span").click (event) ->
+    if $(event.target).is(".file_link")
+      try
+        rubyCall "input", ["open_file_request", $(event.target).attr('data-file'), $(event.target).attr('data-line')]
+      catch e
+        alert(e.message)
+
   $("form").submit (e) ->
     e.preventDefault()
     value = input.val()

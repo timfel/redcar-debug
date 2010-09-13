@@ -14,6 +14,15 @@
       output_buffer = "#" + $(this).attr("id").replace("-tab", "");
       return $(output_buffer).show();
     });
+    $("span").click(function(event) {
+      if ($(event.target).is(".file_link")) {
+        try {
+          return rubyCall("input", ["open_file_request", $(event.target).attr('data-file'), $(event.target).attr('data-line')]);
+        } catch (e) {
+          return alert(e.message);
+        }
+      }
+    });
     $("form").submit(function(e) {
       var value;
       e.preventDefault();
