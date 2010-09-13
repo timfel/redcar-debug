@@ -31,12 +31,9 @@ $(document).ready ->
     input.val ""
     input.focus()
 
-  $("a").click (event) ->
+  $(".rerun").click (event) ->
     event.preventDefault
-    try
-      rubyCall "input", ["open_file_request", $(this).attr('data-file'), $(this).attr('data-line')]
-    catch e
-      alert(e.message)
+    rubyCall "input", ["rerun"]
 
   $(window).resize composite_layout_function
   composite_layout_function()

@@ -13,6 +13,8 @@ class GDI::OutputController
     def add_listeners
       @output_controller.add_listener(:stdin_ready) {|cmd| input(cmd) }
       @output_controller.add_listener(:stdin_keypress) {|key| keypress(key) }
+      @output_controller.add_listener(:rerun) { show_prompt }
+
       @process_controller.add_listener(:prompt_ready) { show_prompt }
       @process_controller.add_listener(:prompt_blocked) { hide_prompt }
       @process_controller.add_listener(:process_finished) { hide_prompt }

@@ -16,6 +16,8 @@ class GDI::ProcessController
     @model       = options[:model].new(@output, self)
     @connection  = options[:connection]
     @arguments   = options[:arguments]
+
+    @output.add_listener(:rerun) { run }
   end
 
   def close

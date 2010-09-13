@@ -8,7 +8,7 @@
 %link{:href => "file://#{Redcar::HtmlView.default_css_path}", :media => "screen", :rel => "stylesheet", :type => "text/css"}
 %link{:href => "file://#{VIEW_ROOT}/index.css", :media => "screen", :rel => "stylesheet", :type => "text/css"}
 
-%span#status
+%span#status.rerun
 
 - for element in @html_elements
   = render(element)

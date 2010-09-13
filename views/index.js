@@ -36,14 +36,9 @@
       input.val("");
       return input.focus();
     });
-    $("a").click(function(event) {
+    $(".rerun").click(function(event) {
       event.preventDefault;
-      try {
-        rubyCall("input", ["open_file_request", $(this).attr('data-file'), $(this).attr('data-line')]);
-        return alert("open " + $(this).attr('data-file') + $(this).attr('data-line'));
-      } catch (e) {
-        return alert(e.message);
-      }
+      return rubyCall("input", ["rerun"]);
     });
     $(window).resize(composite_layout_function);
     composite_layout_function();
