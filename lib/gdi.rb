@@ -9,7 +9,7 @@ class GDI
     end
 
     def menus
-      Menu::Builder.build do
+      Redcar::Menu::Builder.build do
         sub_menu "Debug" do
           sub_menu "GDI" do
             GDI.debuggers.each do |p|
@@ -21,7 +21,7 @@ class GDI
     end
 
     def edit_view_context_menus
-      Menu::Builder.build do
+      Redcar::Menu::Builder.build do
         group(:priority => 50) do
           item("Set breakpoint") { GDI::BreakpointCommand.execute }
         end
