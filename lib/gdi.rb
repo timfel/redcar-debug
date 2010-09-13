@@ -23,7 +23,7 @@ class GDI
     def edit_view_context_menus
       Menu::Builder.build do
         group(:priority => 50) do
-          item "Set breakpoint", :command => GDI::BreakpointCommand
+          item("Set breakpoint") { GDI::BreakpointCommand.execute }
         end
       end
     end

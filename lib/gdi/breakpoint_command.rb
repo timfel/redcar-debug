@@ -10,6 +10,10 @@ class GDI
 #
 #    sensitize :debuggable_source_tab
 
+    def self.execute
+      self.new.execute
+    end
+
     def execute
       tab = Redcar.app.focussed_window.focussed_notebook.focussed_tab
       # TODO: What now? Get the line? The breakpoint?
