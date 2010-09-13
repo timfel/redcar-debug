@@ -26,10 +26,6 @@ module GDI::OutputHelper
   # XXX: Law-of-demeter
   def process(text, model)
     text = text.to_s.gsub("\n", "<br>")
-    links = model.find_links(text)
-    links.each do |l|
-      text = text.sub(l.match, %{<a href="#" data-file="#{l.file}" data-line="#{l.line}">#{l.match}</a>})
-    end
-    text
+    model.process_output(text)
   end
 end
