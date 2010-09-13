@@ -9,7 +9,6 @@ class Redcar::GDI
 
     def initialize(process_controller)
       @process_controller = process_controller
-      ReplController.new(self, process_controller)
 
       process_controller.add_listener(:run) { show_tab }
       process_controller.add_listener(:prompt_ready) { status("Ready") }
