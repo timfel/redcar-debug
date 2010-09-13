@@ -1,10 +1,10 @@
-class Redcar::GDI::Debugger
+class GDI::Debugger
   module Files
     class Base
       attr_reader :debugger
 
       # Creates a new linker instance for the given debugger
-      # @param Redcar::GDI::Debugger
+      # @param GDI::Debugger
       def initialize(debugger)
         @debugger = debugger
       end

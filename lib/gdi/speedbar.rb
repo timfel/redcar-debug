@@ -1,6 +1,6 @@
 require 'gdi/process_controller'
 
-class Redcar::GDI::Speedbar < Redcar::Speedbar
+class GDI::Speedbar < Redcar::Speedbar
   class << self
     attr_accessor :previous_connection
     attr_accessor :previous_arguments
@@ -39,7 +39,7 @@ class Redcar::GDI::Speedbar < Redcar::Speedbar
   end
 
   def debug(connection, arguments)
-    Redcar::GDI::ProcessController.new(:model => model,
+    GDI::ProcessController.new(:model => model,
       :arguments => arguments,
       :connection => connection).run
     controller.close

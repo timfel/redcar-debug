@@ -1,8 +1,8 @@
 require 'gdi/output_helper'
 
-class Redcar::GDI::OutputController
+class GDI::OutputController
   class Base
-    include Redcar::GDI::OutputHelper
+    include GDI::OutputHelper
 
     def initialize(output_controller, process_controller)
       @output_controller = output_controller

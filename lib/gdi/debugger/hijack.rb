@@ -4,7 +4,7 @@ require 'gdi/debugger/rdebug'
 # It differs from plain RDebug only in that it first
 # displays an IRB prompt which is not for debugging,
 # but for setting breakpoints
-class Redcar::GDI::Debugger
+class GDI::Debugger
   class Hijack < RDebug
     Commandline = "hijack "
 

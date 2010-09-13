@@ -1,11 +1,11 @@
 require 'gdi/debugger/files/default_linker'
 
-class Redcar::GDI
+class GDI
   class Debugger
     class << self
       # Subscribe each subclass to the GDI plugin
       def inherited(clazz)
-        Redcar::GDI.debuggers << clazz
+        GDI.debuggers << clazz
         super(clazz)
       end
 

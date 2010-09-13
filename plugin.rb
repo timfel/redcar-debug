@@ -2,7 +2,7 @@ Plugin.define do
   name "gdi"
   version "0.0.2"
 
-  object "Redcar::GDI"
+  object "GDI"
   file "lib", "gdi"
 
   dependencies  "core",      ">0",

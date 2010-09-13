@@ -1,6 +1,6 @@
 require 'gdi/debugger/files/base'
 
-module Redcar::GDI::Debugger::Files
+module GDI::Debugger::Files
   class DefaultLinker < Base
 
     def find_links(text)

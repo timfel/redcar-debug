@@ -1,4 +1,4 @@
-module Redcar::GDI::Debugger::Files
+module GDI::Debugger::Files
   class JdbLinker < DefaultLinker
 
     # The JDB file pattern matches class paths, followed either by a colon

@@ -1,4 +1,4 @@
-class Redcar::GDI::Debugger::GDB < Redcar::GDI::Debugger
+class GDI::Debugger::GDB < GDI::Debugger
   Commandline = "gdb -p "
   Backtrace = "bt"
   Locals = "info locals"

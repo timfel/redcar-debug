@@ -1,4 +1,4 @@
-class Redcar::GDI::Debugger::RDebug < Redcar::GDI::Debugger
+class GDI::Debugger::RDebug < GDI::Debugger
   Commandline = "rdebug -c "
   Backtrace = "backtrace"
   Threads = "info threads"

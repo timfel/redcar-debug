@@ -2,7 +2,7 @@ require 'open3'
 require 'timeout'
 require 'gdi/output_controller'
 
-class Redcar::GDI::ProcessController
+class GDI::ProcessController
   BUFFER_SIZE = 10000
   COMMAND_TIMEOUT = 10
 
@@ -12,7 +12,7 @@ class Redcar::GDI::ProcessController
   attr_accessor :breakpoints
 
   def initialize(options)
-    @output      = Redcar::GDI::OutputController.new(self)
+    @output      = GDI::OutputController.new(self)
     @model       = options[:model].new(@output, self)
     @connection  = options[:connection]
     @arguments   = options[:arguments]

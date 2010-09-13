@@ -1,6 +1,6 @@
 require 'gdi/debugger/files/jdb_linker'
 
-class Redcar::GDI::Debugger::JDB < Redcar::GDI::Debugger
+class GDI::Debugger::JDB < GDI::Debugger
   Commandline = "jdb -attach "
   Backtrace = "where"
   Locals = "locals"
@@ -8,7 +8,7 @@ class Redcar::GDI::Debugger::JDB < Redcar::GDI::Debugger
   Threads = "threads"
 
   src_extensions /\.java/
-  file_linker = Redcar::GDI::Debugger::Files::JdbLinker
+  file_linker = GDI::Debugger::Files::JdbLinker
   html_elements({:partial => "repl"},
       {:partial => "notebook", :windows => [
         {:name => "Backtrace", :id => "backtrace"},

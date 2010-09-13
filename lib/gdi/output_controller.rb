@@ -1,9 +1,9 @@
 require 'gdi/output_helper'
 require 'gdi/output_controller/repl_controller'
 
-class Redcar::GDI
+class GDI
   class  OutputController
-    include Redcar::GDI::OutputHelper
+    include GDI::OutputHelper
     include Redcar::HtmlController
     include Redcar::Observable
 
