@@ -17,7 +17,7 @@
     $("span").click(function(event) {
       if ($(event.target).is(".file_link")) {
         try {
-          return rubyCall("input", ["open_file_request", $(event.target).attr('data-file'), $(event.target).attr('data-line')]);
+          return Controller.input("open_file_request", $(event.target).attr('data-file'), $(event.target).attr('data-line'));
         } catch (e) {
           return alert(e.message);
         }
@@ -29,7 +29,7 @@
       value = input.val();
       output.append("<span class=\"stdout\">" + value + "<br></span>");
       try {
-        rubyCall("input", ["stdin_ready", value]);
+        Controller.input("stdin_ready", value);
       } catch (error) {
         alert(error.message);
       }
@@ -38,16 +38,16 @@
     });
     $(".rerun").click(function(event) {
       event.preventDefault;
-      return rubyCall("input", ["rerun"]);
+      return Controller.input("rerun");
     });
     $(window).resize(composite_layout_function);
     composite_layout_function();
     return $("input").keydown(function(event) {
       event = event || window.event;
       if ((event.keyCode === 38)) {
-        return rubyCall("input", ["stdin_keypress", "up"]);
+        return Controller.input("stdin_keypress", "up");
       } else if ((event.keyCode === 40)) {
-        return rubyCall("input", ["stdin_keypress", "down"]);
+        return Controller.input("stdin_keypress", "down");
       }
     });
   });

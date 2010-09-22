@@ -14,7 +14,7 @@ $(document).ready ->
   $("span").click (event) ->
     if $(event.target).is(".file_link")
       try
-        rubyCall "input", ["open_file_request", $(event.target).attr('data-file'), $(event.target).attr('data-line')]
+        Controller.input("open_file_request", $(event.target).attr('data-file'), $(event.target).attr('data-line'))
       catch e
         alert(e.message)
 
@@ -25,7 +25,7 @@ $(document).ready ->
     # Just push the data, output comes from debugger
     try
       # Call the Controller. FIXME: Why is the Controller const not available here?
-      rubyCall "input", ["stdin_ready", value]
+      Controller.input("stdin_ready", value)
     catch error
       alert error.message
     input.val ""
@@ -33,7 +33,7 @@ $(document).ready ->
 
   $(".rerun").click (event) ->
     event.preventDefault
-    rubyCall "input", ["rerun"]
+    Controller.input("rerun")
 
   $(window).resize composite_layout_function
   composite_layout_function()
@@ -42,9 +42,9 @@ $(document).ready ->
     event = event || window.event
     # interesting events are 38 (keyup) and 40 (keydown)
     if (event.keyCode == 38)
-      rubyCall "input", ["stdin_keypress", "up"]
+      Controller.input("stdin_keypress", "up")
     else if (event.keyCode == 40)
-      rubyCall "input", ["stdin_keypress", "down"]
+      Controller.input("stdin_keypress", "down")
 
 composite_layout_function = ->
     if ($(window).width() > $(window).height())
