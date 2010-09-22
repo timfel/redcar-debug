@@ -8,6 +8,7 @@ class GDI::Debugger
     Breakpoints = "clear"
     Threads = "threads"
 
+    display_name "Java Debugger"
     src_extensions /\.java/
     file_linker = GDI::Debugger::Files::JdbLinker
     html_elements({:partial => "repl"},

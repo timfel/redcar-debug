@@ -6,6 +6,7 @@ class GDI::Debugger
     Registers = "info reg"
     Breakpoints = "info breakpoints"
 
+    display_name "GNU Debugger"
     prompt_ready? {|stdout| stdout.end_with? "(gdb) " }
     src_extensions /\.(?:cpp|c)/
     html_elements({:partial => "repl"},

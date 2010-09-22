@@ -8,6 +8,8 @@ class GDI::Debugger
   class Hijack < RDebug
     Commandline = "hijack "
 
+    display_name "Hijack for MRI"
+
     def query(info)
       # If we're at an irb prompt, we cannot run our info queries
       super unless @irb_prompt

@@ -6,6 +6,7 @@ class GDI::Debugger
     Breakpoints = "info breakpoints"
     Variables = "info variables"
 
+    display_name "Ruby Debug"
     prompt_ready? {|stdout| stdout =~ /\(rdb:[0-9]+\) $/ }
     src_extensions /\.(?:rb|rhtml|html\.erb)/
     html_elements({:partial => "repl"},
