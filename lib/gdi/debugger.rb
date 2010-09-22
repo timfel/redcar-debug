@@ -3,6 +3,12 @@ require 'gdi/debugger/files/default_linker'
 class GDI
   class Debugger
     class << self
+      @@active_debuggers = []
+
+      def active_debuggers
+        @@active_debuggers
+      end
+
       # Subscribe each subclass to the GDI plugin
       def inherited(clazz)
         GDI.debuggers << clazz
@@ -88,9 +94,12 @@ class GDI
     attr_reader :output, :process
 
     def initialize(output, process)
+      @@active_debuggers << self
       @process = process
       @output = output
       @file_linker = self.class.file_linker.new(self)
+
+      @process.add_listener(:process_finished) { @@active_debuggers.delete(self) }
     end
 
     def wait_for(&block)
