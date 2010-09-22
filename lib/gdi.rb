@@ -1,5 +1,5 @@
 require 'patches/try'
-require 'gdi/breakpoint_command'
+require 'gdi/context_menu'
 require 'gdi/speedbar'
 
 class GDI
@@ -23,7 +23,8 @@ class GDI
     def edit_view_context_menus
       Redcar::Menu::Builder.build do
         group(:priority => 50) do
-          item("Set breakpoint") { GDI::BreakpointCommand.execute }
+          item("Set breakpoint") { GDI::ContextMenu.set_breakpoint }
+          item("Evalute") { GDI::ContextMenu.evaluate }
         end
       end
     end
