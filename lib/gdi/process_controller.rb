@@ -4,7 +4,6 @@ require 'gdi/output_controller'
 
 class GDI::ProcessController
   BUFFER_SIZE = 10000
-  COMMAND_TIMEOUT = 10
 
   include Redcar::Observable
 
@@ -77,23 +76,12 @@ class GDI::ProcessController
   def wait_for
     buffer = @stdout.gets
 
-    catch (:output_ready) do
-      loop do
-        # Wait for output
-        begin
-          timeout(COMMAND_TIMEOUT) do
-            buffer += @stdout.readpartial(BUFFER_SIZE)
-          end
-        rescue Timeout::Error
-        end
-        if yield(buffer)
-          throw :output_ready
-        else
-          # Command output has not finished
-          # Let JRuby pump the stdout of the process and wait for more
-          Thread.pass
-        end
-      end
+    loop do
+      break if yield(buffer)
+      buffer += @stdout.readpartial(BUFFER_SIZE)
+      # Command output has not finished
+      # Let JRuby pump the stdout of the process and wait for more
+      Thread.pass
     end
 
     buffer
