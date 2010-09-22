@@ -4,6 +4,9 @@
 class NilClass
   def try(*args)
   end
+
+  def any?
+  end
 end
 
 class Object
