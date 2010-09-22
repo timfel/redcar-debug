@@ -7,6 +7,7 @@ class GDI::Debugger
     Locals = "locals"
     Breakpoints = "clear"
     Threads = "threads"
+    Evaluate = "print"
 
     display_name "Java Debugger"
     src_extensions /\.java/

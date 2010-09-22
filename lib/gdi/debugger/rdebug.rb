@@ -5,6 +5,7 @@ class GDI::Debugger
     Threads = "info threads"
     Breakpoints = "info breakpoints"
     Variables = "info variables"
+    Evaluate = "p"
 
     display_name "Ruby Debug"
     prompt_ready? {|stdout| stdout =~ /\(rdb:[0-9]+\) $/ }

@@ -5,6 +5,7 @@ class GDI::Debugger
     Locals = "info locals"
     Registers = "info reg"
     Breakpoints = "info breakpoints"
+    Evaluate = "print"
 
     display_name "GNU Debugger"
     prompt_ready? {|stdout| stdout.end_with? "(gdb) " }
