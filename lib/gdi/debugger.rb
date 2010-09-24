@@ -89,6 +89,16 @@ class GDI
       def abstract!
         GDI.debuggers.delete(self)
       end
+
+      # Test if this debugger can work without mandatory connection specification
+      def auto_connecting?
+        !!get_inherited_attribute("@auto_connecting")
+      end
+
+      # This debugger can work without mandatory arguments
+      def auto_connecting!
+        @auto_connecting = true
+      end
     end
 
     attr_reader :output, :process
