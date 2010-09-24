@@ -1,11 +1,6 @@
 require 'gdi/process_controller'
 
 class GDI::Speedbar < Redcar::Speedbar
-  class << self
-    attr_accessor :previous_connection
-    attr_accessor :previous_arguments
-  end
-
   attr_accessor :model
   
   def self.connection_widgets(auto_connecting = true)
@@ -22,11 +17,9 @@ class GDI::Speedbar < Redcar::Speedbar
     textbox :arguments
 
     button :button_debug, "Debug!", "Return" do
-      connection_value = (" " if model.auto_connecting?) || connection.value
+      connection_value = (" " if auto_connecting) || connection.value
       unless connection_value.empty?
-        self.class.previous_connection = connection.value
-        self.class.previous_arguments  = arguments.value
-        debug(connection.value, arguments.value)
+        debug(:connection => connection_value, :arguments => arguments.value)
       else
         connection.value = "--- Need a value"
       end
@@ -42,14 +35,17 @@ class GDI::Speedbar < Redcar::Speedbar
   end
 
   def after_draw
-    connection.value = self.class.previous_connection || ""
-    arguments.value  = self.class.previous_arguments || ""
+    if model.previous_connection
+      unless model.auto_connecting?
+        connection.value = model.previous_connection[:connection]
+      end
+      arguments.value  = model.previous_connection[:arguments]
+    end
   end
 
-  def debug(connection, arguments)
-    GDI::ProcessController.new(:model => model,
-      :arguments => arguments,
-      :connection => connection).run
+  def debug(options)
+    model.previous_connection = options
+    GDI::ProcessController.new(options.merge(:model => model)).run
     controller.close
   end
 end

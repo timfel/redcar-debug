@@ -99,6 +99,14 @@ class GDI
       def auto_connecting!
         @auto_connecting = true
       end
+
+      def previous_connection
+        @previous_connection
+      end
+
+      def previous_connection= options
+        @previous_connection = options
+      end
     end
 
     attr_reader :output, :process
