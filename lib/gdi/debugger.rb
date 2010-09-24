@@ -2,6 +2,9 @@ require 'gdi/debugger/files/default_linker'
 
 class GDI
   class Debugger
+
+    Breakpoint = Struct.new(:file, :line, :debugger)
+
     class << self
       @@active_debuggers = []
 
@@ -136,6 +139,10 @@ class GDI
 
     def src_extensions
       self.class.src_extensions
+    end
+
+    def breakpoints
+      self.class.breakpoints
     end
   end
 end
