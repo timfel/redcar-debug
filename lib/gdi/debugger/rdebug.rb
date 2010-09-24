@@ -1,6 +1,6 @@
 class GDI::Debugger
   class RDebug < Base
-    Commandline = "rdebug -c "
+    Commandline = "rdebug -c -h"
     Backtrace = "backtrace"
     Threads = "info threads"
     Breakpoints = "info breakpoints"
