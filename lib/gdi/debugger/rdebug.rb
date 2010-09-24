@@ -1,12 +1,13 @@
 class GDI::Debugger
   class RDebug < Base
-    Commandline = "rdebug -c -h"
+    Commandline = "rdebug -c "
     Backtrace = "backtrace"
     Threads = "info threads"
     Breakpoints = "info breakpoints"
     Variables = "info variables"
     Evaluate = "p"
 
+    auto_connecting!
     display_name "Ruby Debug"
     prompt_ready? {|stdout| stdout =~ /\(rdb:[0-9]+\) $/ }
     src_extensions /\.(?:rb|rhtml|html\.erb)/
