@@ -9,7 +9,7 @@ class GDI::Debugger
 
     auto_connecting!
     display_name "Ruby Debug"
-    prompt_ready? {|stdout| stdout =~ /\(rdb:[0-9]+\) $/ }
+    prompt_ready? {|stdout| (stdout =~ /\(rdb:[A-Za-z0-9]+\)\s+$/) }
     src_extensions /\.(?:rb|rhtml|html\.erb)/
     html_elements({:partial => "repl"},
       {:partial => "window", :name => "Backtrace", :id => "backtrace"},
