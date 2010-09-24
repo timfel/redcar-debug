@@ -25,7 +25,7 @@ module GDI::OutputHelper
   # TODO: Hook up linking
   # XXX: Law-of-demeter
   def process(text, model)
-    text = text.to_s.gsub("\n", "<br>")
+    text = text.to_s.gsub("\n", "<br>").gsub("\t", "&nbsp;" * 2).gsub(" ", "&nbsp;")
     model.process_output(text)
   end
 end
