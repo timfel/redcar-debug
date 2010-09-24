@@ -19,7 +19,7 @@ class GDI::Debugger
         {:name => "Threads", :id => "threads"},
         {:name => "Breakpoints", :id => "breakpoints"} ] })
 
-        def initialize(output, process)
+    def initialize(output, process)
       super
       automatic_queries
     end
