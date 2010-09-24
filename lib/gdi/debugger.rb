@@ -118,9 +118,19 @@ class GDI
       @@active_debuggers << self
       @process = process
       @output = output
+      @instance_breakpoints = []
       @file_linker = self.class.file_linker.new(self)
 
+      @process.add_listener(:prompt_ready) { set_breakpoints }
       @process.add_listener(:process_finished) { @@active_debuggers.delete(self) }
+    end
+
+    # Sets all breakpoints that have not yet been set on the instance
+    def set_breakpoints
+      (breakpoints - @instance_breakpoints).each do |b|
+        @process.input("#{self.class::Break} #{b.file}:#{b.line}")
+      end
+      @instance_breakpoints += breakpoints
     end
 
     def wait_for(&block)

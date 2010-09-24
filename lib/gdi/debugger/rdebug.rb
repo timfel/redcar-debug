@@ -6,6 +6,7 @@ class GDI::Debugger
     Breakpoints = "info breakpoints"
     Variables = "info variables"
     Evaluate = "p"
+    Break = "break"
 
     auto_connecting!
     display_name "Ruby Debug"

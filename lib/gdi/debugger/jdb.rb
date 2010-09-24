@@ -8,6 +8,7 @@ class GDI::Debugger
     Breakpoints = "clear"
     Threads = "threads"
     Evaluate = "print"
+    Break = "stop at"
 
     display_name "Java Debugger"
     src_extensions /\.java/
