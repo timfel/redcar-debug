@@ -37,9 +37,17 @@ class GDI::OutputController
       JAVASCRIPT
     end
 
+    # Show the input in the view and send it to the process controller
+    # If the input is empty, use the last command from the history. If no
+    # history is available, don't execute.
     def input(cmd)
+      return if cmd.empty? && cmd_history.last.nil?
+      if cmd.empty?
+        cmd = cmd_history.last
+      else
+        cmd_history << cmd
+      end
       print("#{cmd}\n", "stdout")
-      cmd_history << cmd
       @process_controller.input(cmd)
     end
 
@@ -65,6 +73,10 @@ class GDI::OutputController
         @stack << item
         @stack = @stack[1..-1] if @stack.length > MAX_LENGTH
         @position = @stack.length
+      end
+
+      def last
+        @stack.last
       end
 
       def move(length)
