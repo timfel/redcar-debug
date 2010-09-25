@@ -30,8 +30,7 @@ class GDI::Debugger
       @process.add_listener(:prompt_ready) do
         if @breakpoint_hit
           [:Backtrace, :Locals, :Breakpoints, :Threads].each do |query|
-            @process.input(self.class.const_get(query))
-            output = wait_for {|stdout| prompt_ready? stdout }
+            output = wait_for(self.class.const_get(query)) {|stdout| prompt_ready? stdout }
             @output.replace(output, query.to_s.downcase)
           end
         end

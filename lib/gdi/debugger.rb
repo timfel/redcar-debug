@@ -133,8 +133,8 @@ class GDI
       @instance_breakpoints += breakpoints
     end
 
-    def wait_for(&block)
-      process.wait_for(&block)
+    def wait_for(cmd, &block)
+      process.wait_for(cmd, &block)
     end
 
     def prompt_ready?(stdout)

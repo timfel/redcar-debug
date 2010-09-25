@@ -26,8 +26,7 @@ class GDI::Debugger
     def automatic_queries
       process.add_listener(:prompt_ready) do
         [:Backtrace, :Locals, :Breakpoints, :Registers].each do |query|
-          process.input(self.class.const_get(query))
-          out = wait_for {|stdout| prompt_ready? stdout }
+          out = wait_for(self.class.const_get(query)) {|stdout| prompt_ready? stdout }
           output.replace(out, query.to_s.downcase)
         end
       end

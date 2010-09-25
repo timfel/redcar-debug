@@ -31,8 +31,7 @@ class GDI::Debugger
     end
 
     def query(info)
-      @process.input(self.class.const_get(info))
-      output = wait_for {|stdout| prompt_ready? stdout }
+      output = wait_for(self.class.const_get(info)) {|stdout| prompt_ready? stdout }
       @output.replace(output, info.to_s.downcase)
     end
   end

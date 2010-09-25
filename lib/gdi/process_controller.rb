@@ -11,10 +11,11 @@ class GDI::ProcessController
   attr_accessor :breakpoints
 
   def initialize(options)
-    @output      = GDI::OutputController.new(self)
-    @model       = options[:model].new(@output, self)
-    @connection  = options[:connection]
-    @arguments   = options[:arguments]
+    @output     = GDI::OutputController.new(self)
+    @model      = options[:model].new(@output, self)
+    @connection = options[:connection]
+    @arguments  = options[:arguments]
+    @mutex      = Mutex.new
 
     @output.add_listener(:rerun) { run }
   end
@@ -36,9 +37,13 @@ class GDI::ProcessController
     [:osx, :linux].include? Redcar.platform ? run_posix : run_windows
   end
 
+  # Send a command to the process. Synchronized, as only one
+  # thread should be able to execute commands at a time
   def input(text)
-    @stdin.puts(text)
-    @stdin.flush
+    @mutex.synchronize do
+      @stdin.puts(text)
+      @stdin.flush
+    end
   end
 
   def commandline
@@ -73,17 +78,20 @@ class GDI::ProcessController
     notify_listeners(:stdout, "Sorry, windows is not supported at this time")
   end
 
-  def wait_for
-    buffer = @stdout.gets
+  # Override the output thread's behaviour to send it's buffers to us to check
+  # against a block. Synchronized to allow only one waiting command at a time.
+  def wait_for(cmd)
+    @mutex.synchronize do
+      @stdin.puts(cmd)
+      @stdin.flush
+      buffer = @stdout.gets
 
-    loop do
-      break if yield(buffer)
-      buffer += @stdout.readpartial(BUFFER_SIZE)
-      # Command output has not finished
-      # Let JRuby pump the stdout of the process and wait for more
-      Thread.pass
+      loop do
+        break if yield(buffer)
+        # The next call blocks if no output is available
+        buffer += @stdout.readpartial(BUFFER_SIZE)
+      end
+      buffer
     end
-
-    buffer
   end
 end
