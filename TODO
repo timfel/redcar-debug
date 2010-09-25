@@ -1,0 +1,7 @@
+Features:
+* Removal of breakpoints
+* Add breakpoint annotations to newly opened files
+
+Bugs:
+* RDebug's prompt doesn't display properly
+* wait_for synchronization is sometimes buggy (printing output to the wrong window)
