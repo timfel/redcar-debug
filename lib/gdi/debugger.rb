@@ -127,10 +127,14 @@ class GDI
 
     # Sets all breakpoints that have not yet been set on the instance
     def set_breakpoints
-      (breakpoints - @instance_breakpoints).each do |b|
-        @process.wait_for("#{self.class::Break} #{b.file}:#{b.line}") {|stdout| prompt_ready? stdout }
-      end
+      (breakpoints - @instance_breakpoints).each {|b| set_breakpoint(b) }
       @instance_breakpoints += breakpoints
+    end
+
+    def set_breakpoint(breakpoint)
+      @process.wait_for("#{self.class::Break} #{breakpoint.file}:#{breakpoint.line}") do |stdout|
+        prompt_ready? stdout
+      end
     end
 
     def wait_for(cmd, &block)
