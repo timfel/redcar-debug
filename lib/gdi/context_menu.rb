@@ -13,7 +13,7 @@ class GDI
             responsible_debugger = GDI.debuggers.detect {|d| document.title =~ d.src_extensions }
 
             if responsible_debugger
-              breakpoint = GDI::Debugger::Breakpoint.new.tap do |b|
+              breakpoint = responsible_debugger::Breakpoint.new.tap do |b|
                 b.file = file
                 b.line = line + 1 # indexing starts at 0 for document lines, but not for debuggers
                 b.debugger = responsible_debugger
