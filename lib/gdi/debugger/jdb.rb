@@ -42,7 +42,7 @@ class GDI
 
       # Override default behaviour to transform path to Java packages before setting the breakpoint
       def set_breakpoint(breakpoint)
-        breakpoint.package = determine_top_level_package
+        breakpoint.package = determine_top_level_package(breakpoint)
         @process.wait_for("#{self.class::Break} #{breakpoint.package}:#{breakpoint.line}") do |stdout|
           prompt_ready? stdout
         end
@@ -50,11 +50,11 @@ class GDI
 
       # TODO: For Java projects which do not have all their java files in a src/ directory,
       # this will fail. Apply more heuristics to find the package name.
-      def determine_top_level_package
+      def determine_top_level_package(breakpoint)
         src_folder = File.join("src", "")
         file = breakpoint.file
         if breakpoint.file.include? src_folder
-          file = breakpoint.split(src_folder)[1..-1].join
+          file = breakpoint.file.split(src_folder)[1..-1].join
         end
         file.gsub(File::SEPARATOR, ".")
       end
