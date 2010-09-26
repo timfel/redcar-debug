@@ -37,7 +37,26 @@ class GDI::Debugger
       end
     end
 
-    # Overwrite default behaviour to be able to set instance variable
+    # Override default behaviour to transform path to Java packages before setting the breakpoint
+    def set_breakpoint(breakpoint)
+      breakpoint.package = determine_top_level_package
+      @process.wait_for("#{self.class::Break} #{breakpoint.file}:#{breakpoint.line}") do |stdout|
+        prompt_ready? stdout
+      end
+    end
+
+    # TODO: For Java projects which do not have all their java files in a src/ directory,
+    # this will fail. Apply more heuristics to find the package name.
+    def determine_top_level_package
+      src_folder = File.join("src", "")
+      file = breakpoint.file
+      if breakpoint.file.include? src_folder
+        file = breakpoint.split(src_folder)[1..-1].join
+      end
+      file.gsub(File::SEPARATOR, ".")
+    end
+
+    # Override default behaviour to be able to set instance variable
     def prompt_ready?(stdout)
       breakpoint_hit?(stdout) || (stdout =~ /> $/)
     end
