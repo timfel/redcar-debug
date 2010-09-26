@@ -13,7 +13,7 @@ class GDI
             if responsible_debugger
               breakpoint = GDI::Debugger::Breakpoint.new.tap do |b|
                 b.file = file
-                b.line = line
+                b.line = line + 1 # indexing starts at 0 for document lines, but not for debuggers
                 b.debugger = responsible_debugger
               end
 
@@ -22,11 +22,9 @@ class GDI
 
                 edit_view.add_annotation_type("gdi.breakpoint.type", :anchor, [32, 64, 245])
 
-                length = document.get_line(line).length
                 document.scroll_to_line(line)
                 edit_view.add_annotation("gdi.breakpoint.type",
-                    line, "#{responsible_debugger.display_name} breakpoint",
-                    0, length)
+                    line, "#{responsible_debugger.display_name} breakpoint", 0, 0)
 
                 GDI::Debugger.active_debuggers.detect {|d| document.title =~ d.src_extensions }.try(:set_breakpoints)
               end
