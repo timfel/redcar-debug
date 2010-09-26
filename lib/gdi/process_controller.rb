@@ -11,11 +11,12 @@ class GDI::ProcessController
   attr_accessor :breakpoints
 
   def initialize(options)
-    @output     = GDI::OutputController.new(self)
-    @model      = options[:model].new(@output, self)
-    @connection = options[:connection]
-    @arguments  = options[:arguments]
-    @mutex      = Mutex.new
+    @output      = GDI::OutputController.new(self)
+    @model       = options[:model].new(@output, self)
+    @connection  = options[:connection]
+    @arguments   = options[:arguments]
+    @stdin_lock  = Mutex.new
+    @stdout_lock = Mutex.new
 
     @output.add_listener(:rerun) { run }
   end
@@ -40,7 +41,7 @@ class GDI::ProcessController
   # Send a command to the process. Synchronized, as only one
   # thread should be able to execute commands at a time
   def input(text)
-    @mutex.synchronize do
+    @stdin_lock.synchronize do
       @stdin.puts(text)
       @stdin.flush
     end
@@ -56,10 +57,12 @@ class GDI::ProcessController
       sleep 1
       begin
         loop do
-          # The process is closed if EOF is reached
-          close if @stdout.eof?
-          # Read at most 10000 bytes. Blocks only if _nothing_ is available
-          buf = @stdout.readpartial(BUFFER_SIZE)
+          buf = @stdout_lock.synchronize do
+            # The process is closed if EOF is reached
+            close if @stdout.eof?
+            # Read at most 10000 bytes. Blocks only if _nothing_ is available
+            @stdout.readpartial(BUFFER_SIZE)
+          end
           notify_listeners(:stdout_ready, buf)
           if buf.size < BUFFER_SIZE
             notify_listeners(@model.prompt_ready?(buf) ? :prompt_ready : :prompt_blocked)
@@ -81,17 +84,19 @@ class GDI::ProcessController
   # Override the output thread's behaviour to send it's buffers to us to check
   # against a block. Synchronized to allow only one waiting command at a time.
   def wait_for(cmd)
-    @mutex.synchronize do
+    @stdin_lock.synchronize do
       @stdin.puts(cmd)
       @stdin.flush
-      buffer = @stdout.gets
 
-      loop do
-        break if yield(buffer)
-        # The next call blocks if no output is available
-        buffer += @stdout.readpartial(BUFFER_SIZE)
+      @stdout_lock.synchronize do
+        buffer = @stdout.readpartial(BUFFER_SIZE)
+        loop do
+          break if yield(buffer)
+          # The next call blocks if no output is available
+          buffer += @stdout.readpartial(BUFFER_SIZE)
+        end
+        buffer
       end
-      buffer
     end
   end
 end
