@@ -56,7 +56,7 @@ class GDI
         if breakpoint.file.include? src_folder
           file = breakpoint.file.split(src_folder)[1..-1].join
         end
-        file.gsub(File::SEPARATOR, ".")
+        file.gsub(File::SEPARATOR, ".").gsub(".java", "")
       end
 
       # Override default behaviour to be able to set instance variable
