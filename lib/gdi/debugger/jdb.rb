@@ -11,6 +11,8 @@ class GDI
       Evaluate = "print"
       Break = "stop at"
 
+      Breakpoint = Struct.new(:file, :package, :line, :debugger)
+
       display_name "Java Debugger"
       src_extensions /\.java/
       file_linker = GDI::Debugger::Files::JdbLinker
@@ -41,7 +43,7 @@ class GDI
       # Override default behaviour to transform path to Java packages before setting the breakpoint
       def set_breakpoint(breakpoint)
         breakpoint.package = determine_top_level_package
-        @process.wait_for("#{self.class::Break} #{breakpoint.file}:#{breakpoint.line}") do |stdout|
+        @process.wait_for("#{self.class::Break} #{breakpoint.package}:#{breakpoint.line}") do |stdout|
           prompt_ready? stdout
         end
       end
