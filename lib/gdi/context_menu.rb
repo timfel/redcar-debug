@@ -1,6 +1,8 @@
+require 'gdi/debug_annotation'
+
 class GDI
   class ContextMenu
-    class << self 
+    class << self
       def set_breakpoint
         edit_view = Redcar::EditView.current
         if edit_view
@@ -19,13 +21,7 @@ class GDI
 
               unless responsible_debugger.breakpoints.include? breakpoint
                 responsible_debugger.breakpoints << breakpoint
-
-                edit_view.add_annotation_type("gdi.breakpoint.type", :anchor, [32, 64, 245])
-
-                document.scroll_to_line(line)
-                edit_view.add_annotation("gdi.breakpoint.type",
-                    line, "#{responsible_debugger.display_name} breakpoint", 0, 0)
-
+                DebugAnnotation.add(edit_view, line, :name => responsible_debugger.display_name, :scroll => true)
                 GDI::Debugger.active_debuggers.detect {|d| document.title =~ d.src_extensions }.try(:set_breakpoints)
               end
             end
