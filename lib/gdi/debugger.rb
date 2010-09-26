@@ -132,9 +132,7 @@ class GDI
     end
 
     def set_breakpoint(breakpoint)
-      @process.wait_for("#{self.class::Break} #{breakpoint.file}:#{breakpoint.line}") do |stdout|
-        prompt_ready? stdout
-      end
+      @process.input("#{self.class::Break} #{breakpoint.file}:#{breakpoint.line}")
     end
 
     def wait_for(cmd, &block)

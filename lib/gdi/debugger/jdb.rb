@@ -43,9 +43,7 @@ class GDI
       # Override default behaviour to transform path to Java packages before setting the breakpoint
       def set_breakpoint(breakpoint)
         breakpoint.package = determine_top_level_package(breakpoint)
-        @process.wait_for("#{self.class::Break} #{breakpoint.package}:#{breakpoint.line}") do |stdout|
-          prompt_ready? stdout
-        end
+        @process.input("#{self.class::Break} #{breakpoint.package}:#{breakpoint.line}")
       end
 
       # TODO: For Java projects which do not have all their java files in a src/ directory,
