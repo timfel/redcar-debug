@@ -16,8 +16,8 @@ class GDI
             responsible_debugger = GDI.debuggers.detect {|d| edit_view.document.title =~ d.src_extensions }
             if responsible_debugger
               breakpoints = responsible_debugger.breakpoints.select {|b| b.file == edit_view.document.mirror.path }
-              breakpoints.each do |bp|
-                add(edit_view, line, :name => responsible_debugger.display_name)
+              breakpoints.each do |b|
+                add(edit_view, b.line, :name => responsible_debugger.display_name)
               end
             end
           end
