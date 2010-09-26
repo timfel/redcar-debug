@@ -6,8 +6,8 @@ module GDI::Debugger::Files
     def file_pattern
       path_segment  = /[A-Za-z\$0-9]+/
       path_segments = /(?:#{path_segment}\.)*/
-      line_number   = /[1-9][0-9]*/
-      /(#{path_segments}#{path_segment})(?::(#{line_number}))?/
+      line_number   = /:[1-9][0-9]*/
+      /(#{path_segments}#{path_segment})(#{line_number})?/
     end
 
     def add_file_link(matched_text, file_part, lineno_part)

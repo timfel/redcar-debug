@@ -15,7 +15,7 @@ class GDI
 
       display_name "Java Debugger"
       src_extensions /\.java/
-      file_linker = GDI::Debugger::Files::JdbLinker
+      file_linker = Files::JdbLinker
       html_elements({:partial => "repl"},
           {:partial => "notebook", :windows => [
             {:name => "Backtrace", :id => "backtrace"},
