@@ -1,0 +1,51 @@
+body {
+  overflow-y: hidden;
+  font-size: 12; }
+  body form {
+    display: inline;
+    font-size: 12; }
+    body form input#input {
+      width: 80%;
+      border: none;
+      border-left: 1px solid #555555;
+      display: inline; }
+      body form input#input:focus {
+        border: none;
+        outline: none; }
+  body .file_link {
+    color: #2222ff; }
+  body .composite.vertical {
+    padding-bottom: 4px;
+    height: 32%;
+    left: 0px;
+    display: block; }
+  body .composite.horizontal {
+    height: 80%;
+    width: 32%;
+    margin-right: 8px;
+    float: left;
+    display: inline; }
+  body .composite .tab {
+    height: 10%;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 4px;
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.25, #87b0f7), color-stop(0.55, #abc7f5), color-stop(0.85, #e6f0ff));
+    background-image: -moz-linear-gradient(center bottom, #87b0f7 25%, #abc7f5 55%, #e6f0ff 85%);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    border: 1px solid #777777;
+    border-bottom: 0px; }
+    body .composite .tab.disabled {
+      background: transparent; }
+  body .composite .window {
+    height: 90%;
+    width: 100%;
+    background-color: white;
+    border: 2px solid #87b0f7;
+    padding: 1px;
+    overflow-y: scroll; }
+    body .composite .window .stderr {
+      color: red; }
